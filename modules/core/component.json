@@ -1,0 +1,30 @@
+{
+  "name": "ng2Core",
+  "repo": "ng2/core",
+  "description": "",
+  "version": "0.0.2",
+  "keywords": [],
+  "dependencies": {
+    "leostera/angular.js": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "routes.js",
+    "config.js",
+    "index.js",
+    "controllers/error.js",
+    "views/error.js",
+    "controllers/welcome.js",
+    "views/welcome.js",
+    "services/user-service.js",
+    "views/navbar.js",
+    "directives/navbar.js"
+  ],
+  "styles": [
+    "styles/normalize.css",
+    "styles/navbar.css",
+    "styles/fonts.css"
+  ]
+}
