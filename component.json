@@ -1,0 +1,19 @@
+{
+  "dependencies": {
+    "leostera/angular.js": "*",
+    "ng2/auth": "*",
+    "ng2/auth-facebook": "*",
+    "ng2/debug": "*",
+    "enricomarino/foundation": "*"
+  },
+  "remotes": [],
+  "local": [
+    "ng2-core",
+    "ng2-loading",
+    "user"
+  ],
+  "paths": [
+    "./components",
+    "./modules"
+  ]
+}

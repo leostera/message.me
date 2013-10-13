@@ -1,0 +1,37 @@
+<html ng-app="grabHalo">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to public</title>
+  <link rel="stylesheet" href="/build/build.css">
+</head>
+<body>
+  <loading-curtain></loading-curtain>
+  <navbar></navbar>
+
+  <ng-view></ng-view>
+  <script src="/build/build.js"></script>
+  <script>
+  require('enricomarino-foundation');
+  window.angular = require('leostera-angular.js');
+  require('leostera-angular.js/build/angular-route.js');
+  require('leostera-angular.js/build/angular-animate.js');
+  require('leostera-angular.js/build/angular-resource.js');
+  require('leostera-angular.js/build/angular-cookies.js');
+  require('leostera-angular.js/build/angular-sanitize.js');
+
+  // Add other requires here
+  bootstrap = require('ng2-core');
+  var app = bootstrap("grabHalo",[], [
+    'ng2Auth',
+    'ng2AuthFacebook',
+    'ng2Debug',
+    'ng2Loading'
+    ]);
+
+  require('ng2-auth');
+  require('ng2-auth-facebook');
+  require('ng2-debug');
+  require('ng2-loading');
+  </script>
+</body>
+</html>
