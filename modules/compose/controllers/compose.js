@@ -5,7 +5,11 @@ angular.module('compose')
   .controller('compose',['$scope', 'Message', 'ng2ws'
   , function ($scope, Message, ws) {
 
-    $scope.users = [];
+    if($scope.users === undefined) {
+      $scope.users = [];
+    }
+
+    ws.send('user:online');
 
     ws.on('user:connect', function (user) {
       $scope.users.push(user);

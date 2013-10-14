@@ -3,7 +3,7 @@ angular.module('ng2Core')
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  // DebugEventsProvider.setFilter('^ng2');
+  DebugEventsProvider.setFilter('^ng2ws');
 
   $locationProvider.html5Mode(true);
 

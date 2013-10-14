@@ -5,13 +5,13 @@
     "ng2/auth-facebook": "*",
     "ng2/loading": "*",
     "ng2/debug": "*",
+    "ng2/ws": "*",
     "enricomarino/foundation": "*"
   },
   "remotes": [],
   "local": [
     "ng2-core",
-    "compose",
-    "ng2-ws"
+    "compose"
   ],
   "paths": [
     "./components",
