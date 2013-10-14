@@ -1,0 +1,22 @@
+{
+  "name": "compose",
+  "repo": "ng2/compose",
+  "description": "",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "config.js",
+    "routes.js",
+    "views/compose.js",
+    "controllers/compose.js",
+    "services/message.js"
+  ],
+  "styles": [
+    "styles/compose.css"
+  ]
+}

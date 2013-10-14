@@ -1,0 +1,31 @@
+<aside class="large-2 large-offset-1 columns">
+  <h5>User List</h5>
+  <input type="search" ng-model="user_search" placeholder="Search users">
+  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>
+  <online-users ng-model="to"></online-users>
+  <ul ng-init="users=[{online: true, username: 'colo'}, {online: false, username:'aleostera'}]">
+    <li ng-repeat="user in filtered_users = (users | filter:user_search)">
+      <i class="status" ng-class="{'online': user.online}"></i>
+      <span ng-click="message.to.push(user)">{{user.username}}</span>
+    </li>
+  </ul>
+  <h6>{{users.length}} Online users</h6>
+</aside>
+<section class="large-8 left columns">
+  <ng-form name="messageForm" class="row">
+    <section class="large-4 right columns">
+      <label for="">sending to:</label>
+      <ul>
+        <li ng-repeat="user in message.to">
+          <i class="status" ng-class="{'online': user.online}"></i>
+          <span>{{user.username}}</span>
+          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>
+        </li>
+      </ul>
+    </section>
+    <section class="large-8 left columns" >
+      <textarea ng-model="message.text" cols="30" required></textarea>
+      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>
+    </section>
+  </ng-form>
+</section>
