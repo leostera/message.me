@@ -19,10 +19,14 @@
   require('leostera-angular.js/build/angular-cookies.js');
   require('leostera-angular.js/build/angular-sanitize.js');
 
+  // var io = require('');
+  // console.log(io);
+
   require('ng2-auth');
   require('ng2-auth-facebook');
   require('ng2-debug');
   require('ng2-loading');
+  require('ng2-ws');
   // Add other requires here
   bootstrap = require('ng2-core');
   var app = bootstrap("grabHalo",
@@ -32,6 +36,7 @@
       'ng2Auth',
       'ng2AuthFacebook',
       'ng2Debug',
+      'ng2ws',
       'ng2Loading'
     ]);
 

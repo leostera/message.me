@@ -2,8 +2,19 @@
  * @name compose.controllers:compose
  */
 angular.module('compose')
-  .controller('compose',['$scope', 'Message'
-  , function ($scope, Message) {
+  .controller('compose',['$scope', 'Message', 'ng2ws'
+  , function ($scope, Message, ws) {
+
+    $scope.users = [];
+
+    ws.on('user:connect', function (user) {
+      $scope.users.push(user);
+    });
+
+    ws.on('user:disconnect', function (user) {
+      $scope.users.splice($scope.users.indexOf(user),1);
+    });
+
     $scope.message = {
       text: "",
       to: []

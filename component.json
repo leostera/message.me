@@ -5,13 +5,13 @@
     "ng2/auth-facebook": "*",
     "ng2/loading": "*",
     "ng2/debug": "*",
-    "enricomarino/foundation": "*",
-    "LearnBoost/socket.io-client": "*"
+    "enricomarino/foundation": "*"
   },
   "remotes": [],
   "local": [
     "ng2-core",
-    "compose"
+    "compose",
+    "ng2-ws"
   ],
   "paths": [
     "./components",

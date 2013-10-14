@@ -4822,6 +4822,10 @@ ng-view > section {
   font-size: 1em;
   max-height: 700px;
 }
+ng-view > section ng-form label.good {
+  float: left;
+  padding: 15px;
+}
 ng-view > section ng-form .left > textarea {
   height: 300px;
   resize: none;
@@ -4871,3 +4875,4 @@ ng-view ul li > i.status.online {
 ng-view ul li > i.mark {
   cursor: pointer;
 }
+

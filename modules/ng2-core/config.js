@@ -1,9 +1,9 @@
 angular.module('ng2Core')
-.config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider'
-  , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider) {
+.config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider', 'ng2wsProvider'
+  , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  // DebugEventsProvider.setFilter('^ng2auth:routes');
+  // DebugEventsProvider.setFilter('^ng2');
 
   $locationProvider.html5Mode(true);
 
@@ -14,4 +14,10 @@ angular.module('ng2Core')
     client_id: '435065866602908'
   });
 
-}]);
+  ng2wsProvider.setUrl("ws://halo_api.leostera.com:8080");
+
+}])
+
+.run(function (ng2ws) {
+  ng2ws.open();
+});

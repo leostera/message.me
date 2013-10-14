@@ -201,7 +201,7 @@ require.relative = function(parent) {
 };
 require.register("leostera-angular.js/build/angular.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1803,7 +1803,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.0-e4f8cd6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.0-6558496',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 0,
@@ -3766,8 +3766,8 @@ var $AnimateProvider = ['$provide', function($provide) {
      * @name ng.$animate
      *
      * @description
-     * The $animate service provides rudimentary DOM manipulation functions to insert, remove, move elements within
-     * the DOM as well as adding and removing classes. This service is the core service used by the ngAnimate $animator
+     * The $animate service provides rudimentary DOM manipulation functions to insert, remove and move elements within
+     * the DOM, as well as adding and removing classes. This service is the core service used by the ngAnimate $animator
      * service which provides high-level animation hooks for CSS and JavaScript. 
      *
      * $animate is available in the AngularJS core, however, the ngAnimate module must be included to enable full out
@@ -3834,7 +3834,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {jQuery/jqLite element} element the element which will be moved around within the DOM
        * @param {jQuery/jqLite element} parent the parent element where the element will be inserted into (if the after element is not present)
        * @param {jQuery/jqLite element} after the sibling element where the element will be positioned next to
-       * @param {function=} done the callback function (if provided) that will be fired after the element has been moved to it's new position
+       * @param {function=} done the callback function (if provided) that will be fired after the element has been moved to its new position
        */
       move : function(element, parent, after, done) {
         // Do not remove element before insert. Removing will cause data associated with the
@@ -4705,7 +4705,7 @@ function $CompileProvider($provide) {
         $provide.factory(name + Suffix, ['$injector', '$exceptionHandler',
           function($injector, $exceptionHandler) {
             var directives = [];
-            forEach(hasDirectives[name], function(directiveFactory) {
+            forEach(hasDirectives[name], function(directiveFactory, index) {
               try {
                 var directive = $injector.invoke(directiveFactory);
                 if (isFunction(directive)) {
@@ -4714,6 +4714,7 @@ function $CompileProvider($provide) {
                   directive.compile = valueFn(directive.link);
                 }
                 directive.priority = directive.priority || 0;
+                directive.index = index;
                 directive.name = directive.name || name;
                 directive.require = directive.require || (directive.controller && directive.name);
                 directive.restrict = directive.restrict || 'A';
@@ -4973,8 +4974,7 @@ function $CompileProvider($provide) {
       }
     };
 
-    var urlSanitizationNode = $document[0].createElement('a'),
-        startSymbol = $interpolate.startSymbol(),
+    var startSymbol = $interpolate.startSymbol(),
         endSymbol = $interpolate.endSymbol(),
         denormalizeTemplate = (startSymbol == '{{' || endSymbol  == '}}')
             ? identity
@@ -4988,7 +4988,7 @@ function $CompileProvider($provide) {
 
     //================================
 
-    function compile($compileNodes, transcludeFn, maxPriority, ignoreDirective) {
+    function compile($compileNodes, transcludeFn, maxPriority, ignoreDirective, previousCompileContext) {
       if (!($compileNodes instanceof jqLite)) {
         // jquery always rewraps, whereas we need to preserve the original selector so that we can modify it.
         $compileNodes = jqLite($compileNodes);
@@ -5000,7 +5000,7 @@ function $CompileProvider($provide) {
           $compileNodes[index] = node = jqLite(node).wrap('<span></span>').parent()[0];
         }
       });
-      var compositeLinkFn = compileNodes($compileNodes, transcludeFn, $compileNodes, maxPriority, ignoreDirective);
+      var compositeLinkFn = compileNodes($compileNodes, transcludeFn, $compileNodes, maxPriority, ignoreDirective, previousCompileContext);
       return function publicLinkFn(scope, cloneConnectFn){
         assertArg(scope, 'scope');
         // important!!: we must call our jqLite.clone() since the jQuery one is trying to be smart
@@ -5047,7 +5047,7 @@ function $CompileProvider($provide) {
      * @param {number=} max directive priority
      * @returns {?function} A composite linking function of all of the matched directives or null.
      */
-    function compileNodes(nodeList, transcludeFn, $rootElement, maxPriority, ignoreDirective) {
+    function compileNodes(nodeList, transcludeFn, $rootElement, maxPriority, ignoreDirective, previousCompileContext) {
       var linkFns = [],
           nodeLinkFn, childLinkFn, directives, attrs, linkFnFound;
 
@@ -5058,7 +5058,7 @@ function $CompileProvider($provide) {
         directives = collectDirectives(nodeList[i], [], attrs, i == 0 ? maxPriority : undefined, ignoreDirective);
 
         nodeLinkFn = (directives.length)
-            ? applyDirectivesToNode(directives, nodeList[i], attrs, transcludeFn, $rootElement, null, [], [])
+            ? applyDirectivesToNode(directives, nodeList[i], attrs, transcludeFn, $rootElement, null, [], [], previousCompileContext)
             : null;
 
         childLinkFn = (nodeLinkFn && nodeLinkFn.terminal || !nodeList[i].childNodes || !nodeList[i].childNodes.length)
@@ -5069,6 +5069,7 @@ function $CompileProvider($provide) {
         linkFns.push(nodeLinkFn);
         linkFns.push(childLinkFn);
         linkFnFound = (linkFnFound || nodeLinkFn || childLinkFn);
+        previousCompileContext = null; //use the previous context only for the first element in the virtual group
       }
 
       // return a linking function if we have found anything, null otherwise
@@ -5269,23 +5270,26 @@ function $CompileProvider($provide) {
      *        scope argument is auto-generated to the new child of the transcluded parent scope.
      * @param {JQLite} jqCollection If we are working on the root of the compile tree then this
      *        argument has the root jqLite array so that we can replace nodes on it.
-     * @param {Object=} ignoreDirective An optional directive that will be ignored when compiling
+     * @param {Object=} originalReplaceDirective An optional directive that will be ignored when compiling
      *        the transclusion.
      * @param {Array.<Function>} preLinkFns
      * @param {Array.<Function>} postLinkFns
+     * @param {Object} previousCompileContext Context used for previous compilation of the current node
      * @returns linkFn
      */
     function applyDirectivesToNode(directives, compileNode, templateAttrs, transcludeFn, jqCollection,
-        originalReplaceDirective, preLinkFns, postLinkFns) {
+        originalReplaceDirective, preLinkFns, postLinkFns, previousCompileContext) {
+      previousCompileContext = previousCompileContext || {};
+
       var terminalPriority = -Number.MAX_VALUE,
-          newScopeDirective = null,
-          newIsolateScopeDirective = null,
-          templateDirective = null,
+          newScopeDirective,
+          newIsolateScopeDirective = previousCompileContext.newIsolateScopeDirective,
+          templateDirective = previousCompileContext.templateDirective,
           $compileNode = templateAttrs.$$element = jqLite(compileNode),
           directive,
           directiveName,
           $template,
-          transcludeDirective,
+          transcludeDirective = previousCompileContext.transcludeDirective,
           replaceDirective = originalReplaceDirective,
           childTranscludeFn = transcludeFn,
           controllerDirectives,
@@ -5334,19 +5338,27 @@ function $CompileProvider($provide) {
         }
 
         if (directiveValue = directive.transclude) {
-          assertNoDuplicate('transclusion', transcludeDirective, directive, $compileNode);
-          transcludeDirective = directive;
+          // Special case ngRepeat so that we don't complain about duplicate transclusion, ngRepeat knows how to handle
+          // this on its own.
+          if (directiveName !== 'ngRepeat') {
+            assertNoDuplicate('transclusion', transcludeDirective, directive, $compileNode);
+            transcludeDirective = directive;
+          }
 
           if (directiveValue == 'element') {
             terminalPriority = directive.priority;
-            $template = groupScan(compileNode, attrStart, attrEnd)
+            $template = groupScan(compileNode, attrStart, attrEnd);
             $compileNode = templateAttrs.$$element =
                 jqLite(document.createComment(' ' + directiveName + ': ' + templateAttrs[directiveName] + ' '));
             compileNode = $compileNode[0];
             replaceWith(jqCollection, jqLite(sliceArgs($template)), compileNode);
 
             childTranscludeFn = compile($template, transcludeFn, terminalPriority,
-                                        replaceDirective && replaceDirective.name);
+                                        replaceDirective && replaceDirective.name, {
+                                          newIsolateScopeDirective: newIsolateScopeDirective,
+                                          transcludeDirective: transcludeDirective,
+                                          templateDirective: templateDirective
+                                        });
           } else {
             $template = jqLite(JQLiteClone(compileNode)).contents();
             $compileNode.html(''); // clear contents
@@ -5408,7 +5420,11 @@ function $CompileProvider($provide) {
           }
 
           nodeLinkFn = compileTemplateUrl(directives.splice(i, directives.length - i), $compileNode,
-              templateAttrs, jqCollection, childTranscludeFn, preLinkFns, postLinkFns);
+              templateAttrs, jqCollection, childTranscludeFn, preLinkFns, postLinkFns, {
+                newIsolateScopeDirective: newIsolateScopeDirective,
+                transcludeDirective: transcludeDirective,
+                templateDirective: templateDirective
+              });
           ii = directives.length;
         } else if (directive.compile) {
           try {
@@ -5707,7 +5723,7 @@ function $CompileProvider($provide) {
 
 
     function compileTemplateUrl(directives, $compileNode, tAttrs,
-        $rootElement, childTranscludeFn, preLinkFns, postLinkFns) {
+        $rootElement, childTranscludeFn, preLinkFns, postLinkFns, previousCompileContext) {
       var linkQueue = [],
           afterTemplateNodeLinkFn,
           afterTemplateChildLinkFn,
@@ -5750,7 +5766,7 @@ function $CompileProvider($provide) {
           directives.unshift(derivedSyncDirective);
 
           afterTemplateNodeLinkFn = applyDirectivesToNode(directives, compileNode, tAttrs,
-              childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns);
+              childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns, previousCompileContext);
           forEach($rootElement, function(node, i) {
             if (node == compileNode) {
               $rootElement[i] = $compileNode[0];
@@ -5797,7 +5813,10 @@ function $CompileProvider($provide) {
      * Sorting function for bound directives.
      */
     function byPriority(a, b) {
-      return b.priority - a.priority;
+      var diff = b.priority - a.priority;
+      if (diff !== 0) return diff;
+      if (a.name !== b.name) return (a.name < b.name) ? -1 : 1;
+      return a.index - b.index;
     }
 
 
@@ -13897,10 +13916,10 @@ var htmlAnchorDirective = valueFn({
  * </div>
  * </pre>
  *
- * The HTML specs do not require browsers to preserve the values of special attributes
- * such as disabled. (The presence of them means true and absence means false)
- * This prevents the Angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngDisabled` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as disabled. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngDisabled` directive solves this problem for the `disabled` attribute.
  *
  * @example
     <doc:example>
@@ -13929,10 +13948,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as checked.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngChecked` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as checked. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngChecked` directive solves this problem for the `checked` attribute.
  * @example
     <doc:example>
       <doc:source>
@@ -13960,10 +13979,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as readonly.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngReadonly` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as readonly. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngReadonly` directive solves this problem for the `readonly` attribute.
  * @example
     <doc:example>
       <doc:source>
@@ -13991,10 +14010,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as selected.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduced the `ngSelected` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as selected. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngSelected` directive solves this problem for the `selected` atttribute.
  * @example
     <doc:example>
       <doc:source>
@@ -14024,10 +14043,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as open.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngOpen` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as open. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngOpen` directive solves this problem for the `open` attribute.
  *
  * @example
      <doc:example>
@@ -17007,7 +17026,7 @@ forEach(
  * position within the DOM, such as the `:first-child` or `:last-child` pseudo-classes.
  *
  * Note that when an element is removed using `ngIf` its scope is destroyed and a new scope
- * is created when the element is restored.  The scope created within `ngIf` inherits from 
+ * is created when the element is restored.  The scope created within `ngIf` inherits from
  * its parent scope using
  * {@link https://github.com/angular/angular.js/wiki/The-Nuances-of-Scope-Prototypal-Inheritance prototypal inheritance}.
  * An important implication of this is if `ngModel` is used within `ngIf` to bind to
@@ -17015,7 +17034,7 @@ forEach(
  * variable within the child scope will override (hide) the value in the parent scope.
  *
  * Also, `ngIf` recreates elements using their compiled state. An example of this behavior
- * is if an element's class attribute is directly modified after it's compiled, using something like 
+ * is if an element's class attribute is directly modified after it's compiled, using something like
  * jQuery's `.addClass()` method, and the element is later removed. When `ngIf` recreates the element
  * the added class will be lost because the original compiled state is used to regenerate the element.
  *
@@ -17070,7 +17089,7 @@ forEach(
 var ngIfDirective = ['$animate', function($animate) {
   return {
     transclude: 'element',
-    priority: 1000,
+    priority: 600,
     terminal: true,
     restrict: 'A',
     compile: function (element, attr, transclude) {
@@ -17112,7 +17131,7 @@ var ngIfDirective = ['$animate', function($animate) {
  * you may either {@link ng.$sceDelegateProvider#resourceUrlWhitelist whitelist them} or
  * {@link ng.$sce#trustAsResourceUrl wrap them} as trusted values. Refer to Angular's {@link
  * ng.$sce Strict Contextual Escaping}.
- * 
+ *
  * In addition, the browser's
  * {@link https://code.google.com/p/browsersec/wiki/Part2#Same-origin_policy_for_XMLHttpRequest
  * Same Origin Policy} and {@link http://www.w3.org/TR/cors/ Cross-Origin Resource Sharing
@@ -17250,7 +17269,7 @@ var ngIncludeDirective = ['$http', '$templateCache', '$anchorScroll', '$compile'
                   function($http,   $templateCache,   $anchorScroll,   $compile,   $animate,   $sce) {
   return {
     restrict: 'ECA',
-    priority: 1000,
+    priority: 400,
     terminal: true,
     transclude: 'element',
     compile: function(element, attr, transclusion) {
@@ -17323,7 +17342,7 @@ var ngIncludeDirective = ['$http', '$templateCache', '$anchorScroll', '$compile'
  *
  * <div class="alert alert-error">
  * The only appropriate use of `ngInit` for aliasing special properties of
- * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo bellow. Besides this case, you
+ * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo below. Besides this case, you
  * should use {@link guide/dev_guide.mvc.understanding_controller controllers} rather than `ngInit`
  * to initialize values on a scope.
  * </div>
@@ -17375,14 +17394,16 @@ var ngInitDirective = ngDirective({
  * @priority 1000
  *
  * @description
- * Sometimes it is necessary to write code which looks like bindings but which should be left alone
- * by angular. Use `ngNonBindable` to make angular ignore a chunk of HTML.
+ * The `ngNonBindable` directive tells Angular not to compile or bind the contents of the current
+ * DOM element. This is useful if the element contains what appears to be Angular directives and
+ * bindings but which should be ignored by Angular. This could be the case if you have a site that
+ * displays snippets of code. for instance.
  *
  * @element ANY
  *
  * @example
- * In this example there are two location where a simple binding (`{{}}`) is present, but the one
- * wrapped in `ngNonBindable` is left alone.
+ * In this example there are two locations where a simple interpolation binding (`{{}}`) is present,
+ * but the one wrapped in `ngNonBindable` is left alone.
  *
  * @example
     <doc:example>
@@ -18540,7 +18561,7 @@ var ngSwitchDirective = ['$animate', function($animate) {
 
 var ngSwitchWhenDirective = ngDirective({
   transclude: 'element',
-  priority: 500,
+  priority: 800,
   require: '^ngSwitch',
   compile: function(element, attrs, transclude) {
     return function(scope, element, attr, ctrl) {
@@ -18552,7 +18573,7 @@ var ngSwitchWhenDirective = ngDirective({
 
 var ngSwitchDefaultDirective = ngDirective({
   transclude: 'element',
-  priority: 500,
+  priority: 800,
   require: '^ngSwitch',
   compile: function(element, attrs, transclude) {
     return function(scope, element, attr, ctrl) {
@@ -19325,7 +19346,7 @@ module.exports = window.angular;
 });
 require.register("leostera-angular.js/build/angular-animate.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -19358,7 +19379,7 @@ require.register("leostera-angular.js/build/angular-animate.js", function(export
  * | {@link ng.directive:ngInclude#animations ngInclude}       | enter and leave                                    |
  * | {@link ng.directive:ngSwitch#animations ngSwitch}         | enter and leave                                    |
  * | {@link ng.directive:ngIf#animations ngIf}                 | enter and leave                                    |
- * | {@link ng.directive:ngShow#animations ngClass}            | add and remove                                     |
+ * | {@link ng.directive:ngClass#animations ngClass}           | add and remove                                     |
  * | {@link ng.directive:ngShow#animations ngShow & ngHide}    | add and remove (the ng-hide class value)           |
  *
  * You can find out more information about animations upon visiting each directive page.
@@ -20120,15 +20141,15 @@ angular.module('ngAnimate', ['ng'])
         function onAnimationProgress(event) {
           event.stopPropagation();
           var ev = event.originalEvent || event;
+          var timeStamp = ev.$manualTimeStamp || ev.timeStamp || Date.now();
           /* $manualTimeStamp is a mocked timeStamp value which is set
            * within browserTrigger(). This is only here so that tests can
-           * mock animations properly. Real events fallback to event.timeStamp.
-           * We're checking to see if the timestamp surpasses the expected delay,
-           * but we're using elapsedTime instead of the timestamp on the 2nd
+           * mock animations properly. Real events fallback to event.timeStamp,
+           * or, if they don't, then a timeStamp is automatically created for them.
+           * We're checking to see if the timeStamp surpasses the expected delay,
+           * but we're using elapsedTime instead of the timeStamp on the 2nd
            * pre-condition since animations sometimes close off early */
-          if((ev.$manualTimeStamp || ev.timeStamp) - startTime >= maxDelayTime &&
-              ev.elapsedTime >= maxDuration) {
-
+          if(Math.max(timeStamp - startTime, 0) >= maxDelayTime && ev.elapsedTime >= maxDuration) {
             done();
           }
         }
@@ -20172,7 +20193,7 @@ angular.module('ngAnimate', ['ng'])
 });
 require.register("leostera-angular.js/build/angular-cookies.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20375,7 +20396,7 @@ angular.module('ngCookies', ['ng']).
 });
 require.register("leostera-angular.js/build/angular-loader.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20697,7 +20718,7 @@ angular.Module;
 });
 require.register("leostera-angular.js/build/angular-mocks.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  *
@@ -22792,7 +22813,7 @@ angular.mock.clearDataCache = function() {
 });
 require.register("leostera-angular.js/build/angular-resource.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -23352,7 +23373,7 @@ angular.module('ngResource', ['ng']).
 });
 require.register("leostera-angular.js/build/angular-route.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -24146,7 +24167,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $compile,   $controller,   
   return {
     restrict: 'ECA',
     terminal: true,
-    priority: 1000,
+    priority: 400,
     transclude: 'element',
     compile: function(element, attr, linker) {
       return function(scope, $element, attr) {
@@ -24218,7 +24239,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $compile,   $controller,   
 });
 require.register("leostera-angular.js/build/angular-sanitize.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34570,7 +34591,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 })( window );
 
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -36173,7 +36194,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.0-e4f8cd6',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.0-6558496',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 0,
@@ -38136,8 +38157,8 @@ var $AnimateProvider = ['$provide', function($provide) {
      * @name ng.$animate
      *
      * @description
-     * The $animate service provides rudimentary DOM manipulation functions to insert, remove, move elements within
-     * the DOM as well as adding and removing classes. This service is the core service used by the ngAnimate $animator
+     * The $animate service provides rudimentary DOM manipulation functions to insert, remove and move elements within
+     * the DOM, as well as adding and removing classes. This service is the core service used by the ngAnimate $animator
      * service which provides high-level animation hooks for CSS and JavaScript. 
      *
      * $animate is available in the AngularJS core, however, the ngAnimate module must be included to enable full out
@@ -38204,7 +38225,7 @@ var $AnimateProvider = ['$provide', function($provide) {
        * @param {jQuery/jqLite element} element the element which will be moved around within the DOM
        * @param {jQuery/jqLite element} parent the parent element where the element will be inserted into (if the after element is not present)
        * @param {jQuery/jqLite element} after the sibling element where the element will be positioned next to
-       * @param {function=} done the callback function (if provided) that will be fired after the element has been moved to it's new position
+       * @param {function=} done the callback function (if provided) that will be fired after the element has been moved to its new position
        */
       move : function(element, parent, after, done) {
         // Do not remove element before insert. Removing will cause data associated with the
@@ -39075,7 +39096,7 @@ function $CompileProvider($provide) {
         $provide.factory(name + Suffix, ['$injector', '$exceptionHandler',
           function($injector, $exceptionHandler) {
             var directives = [];
-            forEach(hasDirectives[name], function(directiveFactory) {
+            forEach(hasDirectives[name], function(directiveFactory, index) {
               try {
                 var directive = $injector.invoke(directiveFactory);
                 if (isFunction(directive)) {
@@ -39084,6 +39105,7 @@ function $CompileProvider($provide) {
                   directive.compile = valueFn(directive.link);
                 }
                 directive.priority = directive.priority || 0;
+                directive.index = index;
                 directive.name = directive.name || name;
                 directive.require = directive.require || (directive.controller && directive.name);
                 directive.restrict = directive.restrict || 'A';
@@ -39343,8 +39365,7 @@ function $CompileProvider($provide) {
       }
     };
 
-    var urlSanitizationNode = $document[0].createElement('a'),
-        startSymbol = $interpolate.startSymbol(),
+    var startSymbol = $interpolate.startSymbol(),
         endSymbol = $interpolate.endSymbol(),
         denormalizeTemplate = (startSymbol == '{{' || endSymbol  == '}}')
             ? identity
@@ -39358,7 +39379,7 @@ function $CompileProvider($provide) {
 
     //================================
 
-    function compile($compileNodes, transcludeFn, maxPriority, ignoreDirective) {
+    function compile($compileNodes, transcludeFn, maxPriority, ignoreDirective, previousCompileContext) {
       if (!($compileNodes instanceof jqLite)) {
         // jquery always rewraps, whereas we need to preserve the original selector so that we can modify it.
         $compileNodes = jqLite($compileNodes);
@@ -39370,7 +39391,7 @@ function $CompileProvider($provide) {
           $compileNodes[index] = node = jqLite(node).wrap('<span></span>').parent()[0];
         }
       });
-      var compositeLinkFn = compileNodes($compileNodes, transcludeFn, $compileNodes, maxPriority, ignoreDirective);
+      var compositeLinkFn = compileNodes($compileNodes, transcludeFn, $compileNodes, maxPriority, ignoreDirective, previousCompileContext);
       return function publicLinkFn(scope, cloneConnectFn){
         assertArg(scope, 'scope');
         // important!!: we must call our jqLite.clone() since the jQuery one is trying to be smart
@@ -39417,7 +39438,7 @@ function $CompileProvider($provide) {
      * @param {number=} max directive priority
      * @returns {?function} A composite linking function of all of the matched directives or null.
      */
-    function compileNodes(nodeList, transcludeFn, $rootElement, maxPriority, ignoreDirective) {
+    function compileNodes(nodeList, transcludeFn, $rootElement, maxPriority, ignoreDirective, previousCompileContext) {
       var linkFns = [],
           nodeLinkFn, childLinkFn, directives, attrs, linkFnFound;
 
@@ -39428,7 +39449,7 @@ function $CompileProvider($provide) {
         directives = collectDirectives(nodeList[i], [], attrs, i == 0 ? maxPriority : undefined, ignoreDirective);
 
         nodeLinkFn = (directives.length)
-            ? applyDirectivesToNode(directives, nodeList[i], attrs, transcludeFn, $rootElement, null, [], [])
+            ? applyDirectivesToNode(directives, nodeList[i], attrs, transcludeFn, $rootElement, null, [], [], previousCompileContext)
             : null;
 
         childLinkFn = (nodeLinkFn && nodeLinkFn.terminal || !nodeList[i].childNodes || !nodeList[i].childNodes.length)
@@ -39439,6 +39460,7 @@ function $CompileProvider($provide) {
         linkFns.push(nodeLinkFn);
         linkFns.push(childLinkFn);
         linkFnFound = (linkFnFound || nodeLinkFn || childLinkFn);
+        previousCompileContext = null; //use the previous context only for the first element in the virtual group
       }
 
       // return a linking function if we have found anything, null otherwise
@@ -39639,23 +39661,26 @@ function $CompileProvider($provide) {
      *        scope argument is auto-generated to the new child of the transcluded parent scope.
      * @param {JQLite} jqCollection If we are working on the root of the compile tree then this
      *        argument has the root jqLite array so that we can replace nodes on it.
-     * @param {Object=} ignoreDirective An optional directive that will be ignored when compiling
+     * @param {Object=} originalReplaceDirective An optional directive that will be ignored when compiling
      *        the transclusion.
      * @param {Array.<Function>} preLinkFns
      * @param {Array.<Function>} postLinkFns
+     * @param {Object} previousCompileContext Context used for previous compilation of the current node
      * @returns linkFn
      */
     function applyDirectivesToNode(directives, compileNode, templateAttrs, transcludeFn, jqCollection,
-        originalReplaceDirective, preLinkFns, postLinkFns) {
+        originalReplaceDirective, preLinkFns, postLinkFns, previousCompileContext) {
+      previousCompileContext = previousCompileContext || {};
+
       var terminalPriority = -Number.MAX_VALUE,
-          newScopeDirective = null,
-          newIsolateScopeDirective = null,
-          templateDirective = null,
+          newScopeDirective,
+          newIsolateScopeDirective = previousCompileContext.newIsolateScopeDirective,
+          templateDirective = previousCompileContext.templateDirective,
           $compileNode = templateAttrs.$$element = jqLite(compileNode),
           directive,
           directiveName,
           $template,
-          transcludeDirective,
+          transcludeDirective = previousCompileContext.transcludeDirective,
           replaceDirective = originalReplaceDirective,
           childTranscludeFn = transcludeFn,
           controllerDirectives,
@@ -39704,19 +39729,27 @@ function $CompileProvider($provide) {
         }
 
         if (directiveValue = directive.transclude) {
-          assertNoDuplicate('transclusion', transcludeDirective, directive, $compileNode);
-          transcludeDirective = directive;
+          // Special case ngRepeat so that we don't complain about duplicate transclusion, ngRepeat knows how to handle
+          // this on its own.
+          if (directiveName !== 'ngRepeat') {
+            assertNoDuplicate('transclusion', transcludeDirective, directive, $compileNode);
+            transcludeDirective = directive;
+          }
 
           if (directiveValue == 'element') {
             terminalPriority = directive.priority;
-            $template = groupScan(compileNode, attrStart, attrEnd)
+            $template = groupScan(compileNode, attrStart, attrEnd);
             $compileNode = templateAttrs.$$element =
                 jqLite(document.createComment(' ' + directiveName + ': ' + templateAttrs[directiveName] + ' '));
             compileNode = $compileNode[0];
             replaceWith(jqCollection, jqLite(sliceArgs($template)), compileNode);
 
             childTranscludeFn = compile($template, transcludeFn, terminalPriority,
-                                        replaceDirective && replaceDirective.name);
+                                        replaceDirective && replaceDirective.name, {
+                                          newIsolateScopeDirective: newIsolateScopeDirective,
+                                          transcludeDirective: transcludeDirective,
+                                          templateDirective: templateDirective
+                                        });
           } else {
             $template = jqLite(JQLiteClone(compileNode)).contents();
             $compileNode.html(''); // clear contents
@@ -39778,7 +39811,11 @@ function $CompileProvider($provide) {
           }
 
           nodeLinkFn = compileTemplateUrl(directives.splice(i, directives.length - i), $compileNode,
-              templateAttrs, jqCollection, childTranscludeFn, preLinkFns, postLinkFns);
+              templateAttrs, jqCollection, childTranscludeFn, preLinkFns, postLinkFns, {
+                newIsolateScopeDirective: newIsolateScopeDirective,
+                transcludeDirective: transcludeDirective,
+                templateDirective: templateDirective
+              });
           ii = directives.length;
         } else if (directive.compile) {
           try {
@@ -40077,7 +40114,7 @@ function $CompileProvider($provide) {
 
 
     function compileTemplateUrl(directives, $compileNode, tAttrs,
-        $rootElement, childTranscludeFn, preLinkFns, postLinkFns) {
+        $rootElement, childTranscludeFn, preLinkFns, postLinkFns, previousCompileContext) {
       var linkQueue = [],
           afterTemplateNodeLinkFn,
           afterTemplateChildLinkFn,
@@ -40120,7 +40157,7 @@ function $CompileProvider($provide) {
           directives.unshift(derivedSyncDirective);
 
           afterTemplateNodeLinkFn = applyDirectivesToNode(directives, compileNode, tAttrs,
-              childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns);
+              childTranscludeFn, $compileNode, origAsyncDirective, preLinkFns, postLinkFns, previousCompileContext);
           forEach($rootElement, function(node, i) {
             if (node == compileNode) {
               $rootElement[i] = $compileNode[0];
@@ -40167,7 +40204,10 @@ function $CompileProvider($provide) {
      * Sorting function for bound directives.
      */
     function byPriority(a, b) {
-      return b.priority - a.priority;
+      var diff = b.priority - a.priority;
+      if (diff !== 0) return diff;
+      if (a.name !== b.name) return (a.name < b.name) ? -1 : 1;
+      return a.index - b.index;
     }
 
 
@@ -48267,10 +48307,10 @@ var htmlAnchorDirective = valueFn({
  * </div>
  * </pre>
  *
- * The HTML specs do not require browsers to preserve the values of special attributes
- * such as disabled. (The presence of them means true and absence means false)
- * This prevents the Angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngDisabled` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as disabled. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngDisabled` directive solves this problem for the `disabled` attribute.
  *
  * @example
     <doc:example>
@@ -48299,10 +48339,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as checked.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngChecked` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as checked. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngChecked` directive solves this problem for the `checked` attribute.
  * @example
     <doc:example>
       <doc:source>
@@ -48330,10 +48370,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as readonly.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngReadonly` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as readonly. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngReadonly` directive solves this problem for the `readonly` attribute.
  * @example
     <doc:example>
       <doc:source>
@@ -48361,10 +48401,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as selected.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduced the `ngSelected` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as selected. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngSelected` directive solves this problem for the `selected` atttribute.
  * @example
     <doc:example>
       <doc:source>
@@ -48394,10 +48434,10 @@ var htmlAnchorDirective = valueFn({
  * @restrict A
  *
  * @description
- * The HTML specs do not require browsers to preserve the special attributes such as open.
- * (The presence of them means true and absence means false)
- * This prevents the angular compiler from correctly retrieving the binding expression.
- * To solve this problem, we introduce the `ngOpen` directive.
+ * The HTML specification does not require browsers to preserve the values of boolean attributes
+ * such as open. (Their presence means true and their absence means false.)
+ * This prevents the Angular compiler from retrieving the binding expression.
+ * The `ngOpen` directive solves this problem for the `open` attribute.
  *
  * @example
      <doc:example>
@@ -51377,7 +51417,7 @@ forEach(
  * position within the DOM, such as the `:first-child` or `:last-child` pseudo-classes.
  *
  * Note that when an element is removed using `ngIf` its scope is destroyed and a new scope
- * is created when the element is restored.  The scope created within `ngIf` inherits from 
+ * is created when the element is restored.  The scope created within `ngIf` inherits from
  * its parent scope using
  * {@link https://github.com/angular/angular.js/wiki/The-Nuances-of-Scope-Prototypal-Inheritance prototypal inheritance}.
  * An important implication of this is if `ngModel` is used within `ngIf` to bind to
@@ -51385,7 +51425,7 @@ forEach(
  * variable within the child scope will override (hide) the value in the parent scope.
  *
  * Also, `ngIf` recreates elements using their compiled state. An example of this behavior
- * is if an element's class attribute is directly modified after it's compiled, using something like 
+ * is if an element's class attribute is directly modified after it's compiled, using something like
  * jQuery's `.addClass()` method, and the element is later removed. When `ngIf` recreates the element
  * the added class will be lost because the original compiled state is used to regenerate the element.
  *
@@ -51440,7 +51480,7 @@ forEach(
 var ngIfDirective = ['$animate', function($animate) {
   return {
     transclude: 'element',
-    priority: 1000,
+    priority: 600,
     terminal: true,
     restrict: 'A',
     compile: function (element, attr, transclude) {
@@ -51482,7 +51522,7 @@ var ngIfDirective = ['$animate', function($animate) {
  * you may either {@link ng.$sceDelegateProvider#resourceUrlWhitelist whitelist them} or
  * {@link ng.$sce#trustAsResourceUrl wrap them} as trusted values. Refer to Angular's {@link
  * ng.$sce Strict Contextual Escaping}.
- * 
+ *
  * In addition, the browser's
  * {@link https://code.google.com/p/browsersec/wiki/Part2#Same-origin_policy_for_XMLHttpRequest
  * Same Origin Policy} and {@link http://www.w3.org/TR/cors/ Cross-Origin Resource Sharing
@@ -51620,7 +51660,7 @@ var ngIncludeDirective = ['$http', '$templateCache', '$anchorScroll', '$compile'
                   function($http,   $templateCache,   $anchorScroll,   $compile,   $animate,   $sce) {
   return {
     restrict: 'ECA',
-    priority: 1000,
+    priority: 400,
     terminal: true,
     transclude: 'element',
     compile: function(element, attr, transclusion) {
@@ -51693,7 +51733,7 @@ var ngIncludeDirective = ['$http', '$templateCache', '$anchorScroll', '$compile'
  *
  * <div class="alert alert-error">
  * The only appropriate use of `ngInit` for aliasing special properties of
- * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo bellow. Besides this case, you
+ * {@link api/ng.directive:ngRepeat `ngRepeat`}, as seen in the demo below. Besides this case, you
  * should use {@link guide/dev_guide.mvc.understanding_controller controllers} rather than `ngInit`
  * to initialize values on a scope.
  * </div>
@@ -51745,14 +51785,16 @@ var ngInitDirective = ngDirective({
  * @priority 1000
  *
  * @description
- * Sometimes it is necessary to write code which looks like bindings but which should be left alone
- * by angular. Use `ngNonBindable` to make angular ignore a chunk of HTML.
+ * The `ngNonBindable` directive tells Angular not to compile or bind the contents of the current
+ * DOM element. This is useful if the element contains what appears to be Angular directives and
+ * bindings but which should be ignored by Angular. This could be the case if you have a site that
+ * displays snippets of code. for instance.
  *
  * @element ANY
  *
  * @example
- * In this example there are two location where a simple binding (`{{}}`) is present, but the one
- * wrapped in `ngNonBindable` is left alone.
+ * In this example there are two locations where a simple interpolation binding (`{{}}`) is present,
+ * but the one wrapped in `ngNonBindable` is left alone.
  *
  * @example
     <doc:example>
@@ -52910,7 +52952,7 @@ var ngSwitchDirective = ['$animate', function($animate) {
 
 var ngSwitchWhenDirective = ngDirective({
   transclude: 'element',
-  priority: 500,
+  priority: 800,
   require: '^ngSwitch',
   compile: function(element, attrs, transclude) {
     return function(scope, element, attr, ctrl) {
@@ -52922,7 +52964,7 @@ var ngSwitchWhenDirective = ngDirective({
 
 var ngSwitchDefaultDirective = ngDirective({
   transclude: 'element',
-  priority: 500,
+  priority: 800,
   require: '^ngSwitch',
   compile: function(element, attrs, transclude) {
     return function(scope, element, attr, ctrl) {
@@ -55887,7 +55929,7 @@ angular.element(document).find('head').prepend('<style type="text/css">@charset 
 });
 require.register("leostera-angular.js/build/angular-touch.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-e4f8cd6
+ * @license AngularJS v1.2.0-6558496
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -68629,11 +68671,11 @@ angular.module('ng2Core')
 });
 require.register("ng2-core/config.js", function(exports, require, module){
 angular.module('ng2Core')
-.config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider'
-  , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider) {
+.config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider', 'ng2wsProvider'
+  , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  // DebugEventsProvider.setFilter('^ng2auth:routes');
+  // DebugEventsProvider.setFilter('^ng2');
 
   $locationProvider.html5Mode(true);
 
@@ -68644,7 +68686,13 @@ angular.module('ng2Core')
     client_id: '435065866602908'
   });
 
-}]);
+  ng2wsProvider.setUrl("ws://halo_api.leostera.com:8080");
+
+}])
+
+.run(function (ng2ws) {
+  ng2ws.open();
+});
 });
 require.register("ng2-core/index.js", function(exports, require, module){
 // auto-exports //
@@ -68854,15 +68902,26 @@ angular.module('compose')
 }]);
 });
 require.register("compose/views/compose.js", function(exports, require, module){
-module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul ng-init="users=[{online: true, username: \'colo\'}, {online: false, username:\'aleostera\'}]">\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.online}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.online}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" required></textarea>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
+module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
 require.register("compose/controllers/compose.js", function(exports, require, module){
 /**
  * @name compose.controllers:compose
  */
 angular.module('compose')
-  .controller('compose',['$scope', 'Message'
-  , function ($scope, Message) {
+  .controller('compose',['$scope', 'Message', 'ng2ws'
+  , function ($scope, Message, ws) {
+
+    $scope.users = [];
+
+    ws.on('user:connect', function (user) {
+      $scope.users.push(user);
+    });
+
+    ws.on('user:disconnect', function (user) {
+      $scope.users.splice($scope.users.indexOf(user),1);
+    });
+
     $scope.message = {
       text: "",
       to: []
@@ -68910,8 +68969,135 @@ angular
 }]);
 });
 require.register("compose/views/compose.js", function(exports, require, module){
-module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul ng-init="users=[{online: true, username: \'colo\'}, {online: false, username:\'aleostera\'}]">\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.online}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.online}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" required></textarea>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
+module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
+require.register("ng2-ws/index.js", function(exports, require, module){
+// auto-exports //
+
+var app = angular.module('ng2ws', []);
+
+require('./providers/ws');
+});
+require.register("ng2-ws/providers/ws.js", function(exports, require, module){
+/**
+* @ngdoc service
+* @name ng2ws.providers:wsProvider
+* @description
+* Provider configuration docs.
+*/
+
+/**
+* @ngdoc service
+* @name ng2ws.services:ws
+* @description
+* Service consumption docs.
+*/
+
+angular
+.module('ng2ws')
+.provider('ng2ws', function () {
+
+  var url
+    , protocols
+    , socket
+    , map;
+
+  return {
+
+    /**
+     * Inject services used within your service here
+     */
+    $get: ['$rootScope', '$timeout'
+    , function ($rootScope, $timeout) {
+
+      map = {};
+
+      if(!url) {
+        $rootScope.$broadcast('ng2ws:log', "Using "+window.location.origin+" as websockets server.");
+        url = "ws://"+window.location.origin.split('//').pop();
+      }
+
+      var connect = function () {
+        socket = new WebSocket(url, protocols);
+        $rootScope.$broadcast('ng2ws:socket::connect', socket);
+
+        socket.onmessage = function (e) {
+          var msg = JSON.parse(e.data);
+          if(msg.data) {
+            msg.data = JSON.parse(msg.data);
+          }
+          $rootScope.$broadcast('ng2ws:socket::message', msg);
+          if(msg.label) {
+            map[msg.label].forEach(function (listener) {
+              listener(msg.data);
+            });
+          } else {
+            Object.keys(map).forEach(function (label) {
+              map[label].forEach(function (listener) {
+                listener(msg);
+              });
+            });
+          }
+        };
+
+        socket.onopen = function (e) {
+          $rootScope.$broadcast('ng2ws:socket::open', e);
+        };
+
+        socket.onerror = function (error) {
+          $rootScope.$broadcast('ng2ws:socket::error', error);
+        };
+      };
+
+      var disconnect = function () {
+        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
+        socket.close();
+        $rootScope.$broadcast('ng2ws:socket::close', socket);
+      }
+
+      /**
+       * @ngdoc function
+       * @name apply
+       * @propertyOf ng2ws.services:ws
+       * @description
+       * Private service function.
+       */
+      var apply = function (callback) {
+        return function (data) {
+          return $timeout(function () {
+            $rootScope.$apply(function () {
+              callback(data);
+            });
+          },0);
+        };
+      };
+
+      return {
+        open: connect,
+        close: disconnect,
+        on: function (name, callback) {
+          if(map[name] === undefined) {
+            map[name] = [];
+          }
+          return map[name].push(apply(callback));
+        }
+      };
+    }],
+
+    setUrl: function (string) {
+      url = string;
+    },
+
+    setProtocols: function (array) {
+      if(typeof array === 'string') {
+        array = [array];
+      }
+      protocols = array;
+    }
+  }
+});
+});
+
 
 
 
@@ -69002,3 +69188,8 @@ require.alias("compose/services/message.js", "undefined/deps/compose/services/me
 require.alias("compose/index.js", "undefined/deps/compose/index.js");
 require.alias("compose/index.js", "compose/index.js");
 require.alias("compose/index.js", "compose/index.js");
+require.alias("ng2-ws/index.js", "undefined/deps/ng2ws/index.js");
+require.alias("ng2-ws/providers/ws.js", "undefined/deps/ng2ws/providers/ws.js");
+require.alias("ng2-ws/index.js", "undefined/deps/ng2ws/index.js");
+require.alias("ng2-ws/index.js", "ng2ws/index.js");
+require.alias("ng2-ws/index.js", "ng2-ws/index.js");
