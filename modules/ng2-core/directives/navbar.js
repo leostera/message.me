@@ -5,7 +5,7 @@
  * Show nav bar, show Login with Facebook button.
  */
 angular.module('ng2Core')
-  .directive('navbar',['OAuth2', function (OAuth2) {
+  .directive('navbar',['OAuth2', '$location', function (OAuth2, $location) {
     'use strict';
 
     return {
@@ -23,6 +23,8 @@ angular.module('ng2Core')
           if(scope.user && scope.user.username) {
             scope.menu = ['inbox','compose','about']
             scope.user.picture = 'https://graph.facebook.com/'+data.username+'/picture';
+          } else {
+            $location.path('/');
           }
         };
 

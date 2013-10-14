@@ -25,6 +25,7 @@
   "styles": [
     "styles/normalize.css",
     "styles/navbar.css",
-    "styles/fonts.css"
+    "styles/fonts.css",
+    "styles/main.css"
   ]
 }

@@ -1,5 +1,5 @@
 nav.top-bar {
-  background-color: #598DEF;
+  background-color: #598def;
 }
 .profile-picture {
   float: left;
@@ -12,7 +12,7 @@ nav > section.top-bar-section > ul > li > a:not(.button):hover {
   background-color: #4974C4;
 }
 nav > section.top-bar-section > ul.menu {
-  background-color: #598DEF;
+  background-color: #598def;
 }
 nav > section.top-bar-section > ul > li > a.active {
   background-color: #4974C4;
@@ -77,14 +77,14 @@ nav > section.top-bar-section > ul > li > a.active {
   }
 }
 .menu li:nth-child(2) {
-  -webkit-animation-delay: .05s;
-  -moz-animation-delay: .05s;
-  -o-animation-delay: .05s;
-}
-.menu li:nth-child(3) {
   -webkit-animation-delay: .1s;
   -moz-animation-delay: .1s;
   -o-animation-delay: .1s;
+}
+.menu li:nth-child(3) {
+  -webkit-animation-delay: .2s;
+  -moz-animation-delay: .2s;
+  -o-animation-delay: .2s;
 }
 /* When hiding profile picture */
 .profile-picture.ng-hide-add,
