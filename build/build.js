@@ -57428,6 +57428,145 @@ angular
   };
 });
 });
+require.register("ng2-ws/index.js", function(exports, require, module){
+// auto-exports //
+
+var app = angular.module('ng2ws', []);
+
+require('./providers/ws');
+});
+require.register("ng2-ws/providers/ws.js", function(exports, require, module){
+/**
+* @ngdoc service
+* @name ng2ws.providers:wsProvider
+* @description
+* Provider configuration docs.
+*/
+
+/**
+* @ngdoc service
+* @name ng2ws.services:ws
+* @description
+* Service consumption docs.
+*/
+
+angular
+.module('ng2ws')
+.provider('ng2ws', function () {
+
+  var url
+    , protocols
+    , socket
+    , map
+    , queue;
+
+  return {
+
+    /**
+     * Inject services used within your service here
+     */
+    $get: ['$rootScope', '$timeout'
+    , function ($rootScope, $timeout) {
+
+      queue = [];
+      map = {};
+
+      if(!url) {
+        $rootScope.$broadcast('ng2ws:log', "Using "+window.location.origin+" as websockets server.");
+        url = "ws://"+window.location.origin.split('//').pop();
+      }
+
+      var connect = function () {
+        socket = new WebSocket(url, protocols);
+        $rootScope.$broadcast('ng2ws:socket::connect', socket);
+
+        socket.onmessage = function (e) {
+          var msg = JSON.parse(e.data);
+          if(msg.data) {
+            msg.data = JSON.parse(msg.data);
+          }
+          $rootScope.$broadcast('ng2ws:socket::message', msg);
+          if(msg.label) {
+            map[msg.label].forEach(function (listener) {
+              listener(msg.data);
+            });
+          } else {
+            Object.keys(map).forEach(function (label) {
+              map[label].forEach(function (listener) {
+                listener(msg);
+              });
+            });
+          }
+        };
+
+        socket.onopen = function (e) {
+          $rootScope.$broadcast('ng2ws:socket::open', e);
+          queue.forEach(function (msg) {
+            socket.send(msg);
+          });
+        };
+
+        socket.onerror = function (error) {
+          $rootScope.$broadcast('ng2ws:socket::error', error);
+        };
+      };
+
+      var disconnect = function () {
+        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
+        socket.close();
+        $rootScope.$broadcast('ng2ws:socket::close', socket);
+      }
+
+      /**
+       * @ngdoc function
+       * @name apply
+       * @propertyOf ng2ws.services:ws
+       * @description
+       * Private service function.
+       */
+      var apply = function (callback) {
+        return function (data) {
+          return $timeout(function () {
+            $rootScope.$apply(function () {
+              callback(data);
+            });
+          },0);
+        };
+      };
+
+      return {
+        open: connect,
+        close: disconnect,
+        send: function (label, data) {
+          var msg = JSON.stringify({label: label, data: data});
+          if(socket.readyState === 1) {
+            socket.send(msg);
+          } else {
+            queue.push(msg);
+          }
+        },
+        on: function (name, callback) {
+          if(map[name] === undefined) {
+            map[name] = [];
+          }
+          return map[name].push(apply(callback));
+        }
+      };
+    }],
+
+    setUrl: function (string) {
+      url = string;
+    },
+
+    setProtocols: function (array) {
+      if(typeof array === 'string') {
+        array = [array];
+      }
+      protocols = array;
+    }
+  }
+});
+});
 require.register("component-jquery/index.js", function(exports, require, module){
 /*!
  * jQuery JavaScript Library v1.9.1
@@ -68675,7 +68814,7 @@ angular.module('ng2Core')
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  // DebugEventsProvider.setFilter('^ng2');
+  DebugEventsProvider.setFilter('^ng2ws');
 
   $locationProvider.html5Mode(true);
 
@@ -68912,7 +69051,11 @@ angular.module('compose')
   .controller('compose',['$scope', 'Message', 'ng2ws'
   , function ($scope, Message, ws) {
 
-    $scope.users = [];
+    if($scope.users === undefined) {
+      $scope.users = [];
+    }
+
+    ws.send('user:online');
 
     ws.on('user:connect', function (user) {
       $scope.users.push(user);
@@ -68971,132 +69114,6 @@ angular
 require.register("compose/views/compose.js", function(exports, require, module){
 module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
-require.register("ng2-ws/index.js", function(exports, require, module){
-// auto-exports //
-
-var app = angular.module('ng2ws', []);
-
-require('./providers/ws');
-});
-require.register("ng2-ws/providers/ws.js", function(exports, require, module){
-/**
-* @ngdoc service
-* @name ng2ws.providers:wsProvider
-* @description
-* Provider configuration docs.
-*/
-
-/**
-* @ngdoc service
-* @name ng2ws.services:ws
-* @description
-* Service consumption docs.
-*/
-
-angular
-.module('ng2ws')
-.provider('ng2ws', function () {
-
-  var url
-    , protocols
-    , socket
-    , map;
-
-  return {
-
-    /**
-     * Inject services used within your service here
-     */
-    $get: ['$rootScope', '$timeout'
-    , function ($rootScope, $timeout) {
-
-      map = {};
-
-      if(!url) {
-        $rootScope.$broadcast('ng2ws:log', "Using "+window.location.origin+" as websockets server.");
-        url = "ws://"+window.location.origin.split('//').pop();
-      }
-
-      var connect = function () {
-        socket = new WebSocket(url, protocols);
-        $rootScope.$broadcast('ng2ws:socket::connect', socket);
-
-        socket.onmessage = function (e) {
-          var msg = JSON.parse(e.data);
-          if(msg.data) {
-            msg.data = JSON.parse(msg.data);
-          }
-          $rootScope.$broadcast('ng2ws:socket::message', msg);
-          if(msg.label) {
-            map[msg.label].forEach(function (listener) {
-              listener(msg.data);
-            });
-          } else {
-            Object.keys(map).forEach(function (label) {
-              map[label].forEach(function (listener) {
-                listener(msg);
-              });
-            });
-          }
-        };
-
-        socket.onopen = function (e) {
-          $rootScope.$broadcast('ng2ws:socket::open', e);
-        };
-
-        socket.onerror = function (error) {
-          $rootScope.$broadcast('ng2ws:socket::error', error);
-        };
-      };
-
-      var disconnect = function () {
-        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
-        socket.close();
-        $rootScope.$broadcast('ng2ws:socket::close', socket);
-      }
-
-      /**
-       * @ngdoc function
-       * @name apply
-       * @propertyOf ng2ws.services:ws
-       * @description
-       * Private service function.
-       */
-      var apply = function (callback) {
-        return function (data) {
-          return $timeout(function () {
-            $rootScope.$apply(function () {
-              callback(data);
-            });
-          },0);
-        };
-      };
-
-      return {
-        open: connect,
-        close: disconnect,
-        on: function (name, callback) {
-          if(map[name] === undefined) {
-            map[name] = [];
-          }
-          return map[name].push(apply(callback));
-        }
-      };
-    }],
-
-    setUrl: function (string) {
-      url = string;
-    },
-
-    setProtocols: function (array) {
-      if(typeof array === 'string') {
-        array = [array];
-      }
-      protocols = array;
-    }
-  }
-});
-});
 
 
 
@@ -69150,6 +69167,11 @@ require.alias("ng2-debug/providers/events.js", "undefined/deps/ng2Debug/provider
 require.alias("ng2-debug/index.js", "undefined/deps/ng2Debug/index.js");
 require.alias("ng2-debug/index.js", "ng2Debug/index.js");
 require.alias("ng2-debug/index.js", "ng2-debug/index.js");
+require.alias("ng2-ws/index.js", "undefined/deps/ng2ws/index.js");
+require.alias("ng2-ws/providers/ws.js", "undefined/deps/ng2ws/providers/ws.js");
+require.alias("ng2-ws/index.js", "undefined/deps/ng2ws/index.js");
+require.alias("ng2-ws/index.js", "ng2ws/index.js");
+require.alias("ng2-ws/index.js", "ng2-ws/index.js");
 require.alias("enricomarino-foundation/index.js", "undefined/deps/foundation/index.js");
 require.alias("enricomarino-foundation/index.js", "foundation/index.js");
 require.alias("component-jquery/index.js", "enricomarino-foundation/deps/jquery/index.js");
@@ -69188,8 +69210,3 @@ require.alias("compose/services/message.js", "undefined/deps/compose/services/me
 require.alias("compose/index.js", "undefined/deps/compose/index.js");
 require.alias("compose/index.js", "compose/index.js");
 require.alias("compose/index.js", "compose/index.js");
-require.alias("ng2-ws/index.js", "undefined/deps/ng2ws/index.js");
-require.alias("ng2-ws/providers/ws.js", "undefined/deps/ng2ws/providers/ws.js");
-require.alias("ng2-ws/index.js", "undefined/deps/ng2ws/index.js");
-require.alias("ng2-ws/index.js", "ng2ws/index.js");
-require.alias("ng2-ws/index.js", "ng2-ws/index.js");
