@@ -1,14 +1,14 @@
 <html ng-app="grabHalo">
 <head>
   <meta charset="UTF-8">
-  <title>Welcome to public</title>
+  <title>Welcome to message.me</title>
   <link rel="stylesheet" href="/build/build.css">
 </head>
 <body>
-  <loading-curtain></loading-curtain>
   <navbar></navbar>
+  <loading-curtain></loading-curtain>
 
-  <ng-view></ng-view>
+  <ng-view class="row"></ng-view>
   <script src="/build/build.js"></script>
   <script>
   require('enricomarino-foundation');
@@ -19,19 +19,23 @@
   require('leostera-angular.js/build/angular-cookies.js');
   require('leostera-angular.js/build/angular-sanitize.js');
 
-  // Add other requires here
-  bootstrap = require('ng2-core');
-  var app = bootstrap("grabHalo",[], [
-    'ng2Auth',
-    'ng2AuthFacebook',
-    'ng2Debug',
-    'ng2Loading'
-    ]);
-
   require('ng2-auth');
   require('ng2-auth-facebook');
   require('ng2-debug');
   require('ng2-loading');
+  // Add other requires here
+  bootstrap = require('ng2-core');
+  var app = bootstrap("grabHalo",
+    [
+      'compose'
+    ], [
+      'ng2Auth',
+      'ng2AuthFacebook',
+      'ng2Debug',
+      'ng2Loading'
+    ]);
+
+  require('compose');
   </script>
 </body>
 </html>

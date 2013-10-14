@@ -3,14 +3,15 @@
     "leostera/angular.js": "*",
     "ng2/auth": "*",
     "ng2/auth-facebook": "*",
+    "ng2/loading": "*",
     "ng2/debug": "*",
-    "enricomarino/foundation": "*"
+    "enricomarino/foundation": "*",
+    "LearnBoost/socket.io-client": "*"
   },
   "remotes": [],
   "local": [
     "ng2-core",
-    "ng2-loading",
-    "user"
+    "compose"
   ],
   "paths": [
     "./components",

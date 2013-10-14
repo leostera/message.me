@@ -1,1 +1,0 @@
-module.exports = '<h2>inbox</h2>\n<section>\n  {{message}}\n</section>';

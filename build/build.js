@@ -56775,8 +56775,6 @@ angular
         locationChange: null,
       };
 
-      var currentUser;
-
       /**
        * @description
        * The actual service.
@@ -56838,7 +56836,7 @@ angular
               $rootScope.$broadcast("ng2auth:routes::redirect", $location.search().redirect);
               $location.path($location.search().redirect);
               $location.search(false);
-            } else {
+            } else if ($location.path() === 'login'){
               $location.path('/');
             }
           };
@@ -56852,7 +56850,7 @@ angular
            * it exists.
            */
           handlers.logoutSuccess = handlers.logoutSuccess || function () {
-            $rootScope.$broadcast("ng2auth:routes::redirecting", "/");
+            $rootScope.$broadcast("ng2auth:routes::redirect", "/");
             $location.path('/');
           };
 
@@ -56866,16 +56864,19 @@ angular
            */
           handlers.locationChange = handlers.locationChange || function (event, next) {
             next = '/'+next.split('/').splice(3).join('/').split("?")[0];
-            if(currentUser === undefined){
-              var route = $route.routes[next] || false;
-              $rootScope.$broadcast("ng2auth:routes::guest-access", next);
-              $rootScope.$broadcast("ng2auth:routes::route-is", {route: next, is: route.public ? "public" : "private"});
-              if(route && (!route.public || route.private) ) {
+            var route = $route.routes[next] || false;
+            if(route && (route.public || route.private !== true) ) {
+              $rootScope.$broadcast("ng2auth:routes::proceed", next);
+            } else if (route && (route.private || route.public === false)) {
+              userService.getUser().then(function (user) {
+                $rootScope.$broadcast("ng2auth:routes::proceed", next);
+              }, function (error) {
+                $rootScope.$broadcast("ng2auth:routes::guest-access", next);
                 $rootScope.$broadcast('ng2auth:routes::login-start');
                 handlers.loginStart(next.substr(1));
-              }
+              });
             } else {
-              $rootScope.$broadcast("ng2auth:routes::proceed", next);
+              $rootScope.$broadcast("ng2auth:routes::error", "Route "+next+" does not exist.");
             }
           };
 
@@ -56885,10 +56886,7 @@ angular
            */
           $rootScope.$on('$locationChangeStart', function (event, next) {
             if(!$route.current) {
-              $rootScope.$broadcast("ng2auth:routes::log","Welcome newcomer!");
-              $rootScope.$broadcast("ng2auth:routes::log","Checking your session...");
               userService.getUser().then(function (user) {
-                currentUser = user;
                 $rootScope.$broadcast("ng2auth:login::success", user);
                 if(typeof handlers.locationChange === 'function') {
                   handlers.locationChange(event, next);
@@ -56907,7 +56905,7 @@ angular
             }
           });
 
-          $rootScope.$on('ng2auth:routes::loginSuccess', function (event, next) {
+          $rootScope.$on('ng2auth:login::success', function (event, next) {
             if(typeof handlers.locationChange === 'function') {
               handlers.loginSuccess(event, next);
             }
@@ -57154,6 +57152,95 @@ angular
     }
   }
 });
+});
+require.register("ng2-loading/index.js", function(exports, require, module){
+// auto-exports //
+
+var app = angular.module('ng2Loading', ['ngRoute']);
+
+require('./services/interceptor');
+require('./directives/loading-curtain');
+require('./config');
+});
+require.register("ng2-loading/config.js", function(exports, require, module){
+angular.module('ng2Auth')
+.config(['$httpProvider'
+  , function ($httpProvider) {
+    $httpProvider.interceptors.push('LoadingHTTPInterceptor');
+}])
+});
+require.register("ng2-loading/services/interceptor.js", function(exports, require, module){
+/**
+ * @ngdoc service
+ * @name ng2Auth.servicesAuthHTTPInterceptor
+ * @description
+ * Makes sure there's a valid session and emit
+ * ng2Auth:login::begin on 403
+ */
+angular.module('ng2Loading')
+.factory('LoadingHTTPInterceptor', ['$rootScope', '$q'
+, function ($rootScope, $q) {
+  return {
+    request: function(config) {
+      $rootScope.$broadcast('ng2loading:request',config);
+      return config || $q.when(config);
+    },
+
+    requestError: function(rejection) {
+      $rootScope.$broadcast('ng2loading:requestError',rejection);
+      return $q.reject(rejection);
+    },
+
+    response: function(response) {
+      $rootScope.$broadcast('ng2loading:response',response);
+      return response || $q.when(response);
+    },
+
+    responseError: function(rejection) {
+      $rootScope.$broadcast('ng2loading:responseError',rejection);
+      return $q.reject(rejection);
+    }
+  };
+}]);
+});
+require.register("ng2-loading/directives/loading-curtain.js", function(exports, require, module){
+/**
+ * @ngdoc directive
+ * @name ng2Core.directives:loadingCurtain
+ * @description
+ * ...
+ */
+angular.module('ng2Loading')
+  .directive('loadingCurtain',['$rootScope', function ($rootScope) {
+    'use strict';
+
+    return {
+      priority: 0,
+      template: require('../views/loading-curtain'),
+      restrict: 'E',
+      replace: true,
+      link: function(scope, element, attr) {
+        var hide = function (event, data) {
+          element.removeClass('curtain-show');
+          element.addClass('curtain-hide');
+        };
+
+        var show = function (event, data) {
+          element.removeClass('curtain-hide');
+          element.addClass('curtain-show');
+        }
+
+        $rootScope.$on('ng2loading:request', show);
+        $rootScope.$on('ng2loading:response', hide);
+        $rootScope.$on('ng2loading:requestError', hide);
+        $rootScope.$on('ng2loading:responseError', hide);
+      }
+    };
+  }
+]);
+});
+require.register("ng2-loading/views/loading-curtain.js", function(exports, require, module){
+module.exports = '<div class="curtain">\n  <h3>Loading...</h3>\n</div>';
 });
 require.register("ng2-debug/index.js", function(exports, require, module){
 // auto-exports //
@@ -68530,7 +68617,6 @@ require.register("ng2-core/routes.js", function(exports, require, module){
 angular.module('ng2Core')
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider
-    // Feel free to remove this root route :)
     .when('/', {
       controller: 'welcome',
       template: require('./views/welcome')
@@ -68547,7 +68633,7 @@ angular.module('ng2Core')
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  DebugEventsProvider.setFilter('^ng2');
+  // DebugEventsProvider.setFilter('^ng2auth:routes');
 
   $locationProvider.html5Mode(true);
 
@@ -68686,7 +68772,7 @@ require.register("ng2-core/directives/navbar.js", function(exports, require, mod
  * Show nav bar, show Login with Facebook button.
  */
 angular.module('ng2Core')
-  .directive('navbar',['OAuth2', function (OAuth2) {
+  .directive('navbar',['OAuth2', '$location', function (OAuth2, $location) {
     'use strict';
 
     return {
@@ -68704,6 +68790,8 @@ angular.module('ng2Core')
           if(scope.user && scope.user.username) {
             scope.menu = ['inbox','compose','about']
             scope.user.picture = 'https://graph.facebook.com/'+data.username+'/picture';
+          } else {
+            $location.path('/');
           }
         };
 
@@ -68736,107 +68824,93 @@ module.exports = '<h2>welcome</h2>';
 require.register("ng2-core/views/navbar.js", function(exports, require, module){
 module.exports = '<nav class="top-bar" style="">\n    <ul class="title-area">\n      <!-- Title Area -->\n      <li class="name">\n        <h1>\n          <a href="/" ng-click="selected=false">\n            message.me\n          </a>\n        </h1>\n      </li>\n      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>\n    </ul>\n\n  <section class="top-bar-section">\n      <!-- Left Nav Section -->\n      <ul class="left menu">\n        <li ng-repeat="item in menu" class="fade">\n          <a href="/{{item}}" ng-click=\'$parent.selected="{{item}}"\' ng-class="{\'active\': selected==item}">\n            {{item}}\n          </a>\n        </li>\n      </ul>\n\n      <!-- Right Nav Section -->\n      <ul class="right">\n        <li class="has-dropdown">\n          <a href="#">\n            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">\n            {{ user.username || "Login" }}\n          </a>\n          <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>\n            <li><label>Login with</label></li>\n            <li><a ng-click="login()" ng-hide="user.username">Login with Facebook</a></li>\n            <li class="divider"></li>\n            <li><a ng-click="logout()" ng-show="user.username">Logout</a></li>\n          </ul>\n        </li>\n      </ul>\n    </section></nav>';
 });
-require.register("ng2-loading/index.js", function(exports, require, module){
+require.register("compose/index.js", function(exports, require, module){
 // auto-exports //
 
-var app = angular.module('ng2Loading', ['ngRoute']);
+var app = angular.module('compose', ['ngRoute']);
 
-require('./services/interceptor');
-require('./directives/loading-curtain');
+require('./controllers/compose');
+require('./services/message');
 require('./config');
+require('./routes');
+
 });
-require.register("ng2-loading/config.js", function(exports, require, module){
-angular.module('ng2Auth')
-.config(['$httpProvider'
-  , function ($httpProvider) {
-    $httpProvider.interceptors.push('LoadingHTTPInterceptor');
-}])
-});
-require.register("ng2-loading/services/interceptor.js", function(exports, require, module){
-/**
- * @ngdoc service
- * @name ng2Auth.servicesAuthHTTPInterceptor
- * @description
- * Makes sure there's a valid session and emit
- * ng2Auth:login::begin on 403
- */
-angular.module('ng2Loading')
-.factory('LoadingHTTPInterceptor', ['$rootScope', '$q'
-, function ($rootScope, $q) {
-  return {
-    request: function(config) {
-      $rootScope.$broadcast('ng2loading:request',config);
-      return config || $q.when(config);
-    },
+require.register("compose/config.js", function(exports, require, module){
+angular.module('compose')
+.config([ '$locationProvider'
+  , function ($locationProvider) {
 
-    requestError: function(rejection) {
-      $rootScope.$broadcast('ng2loading:requestError',rejection);
-      return $q.reject(rejection);
-    },
-
-    response: function(response) {
-      $rootScope.$broadcast('ng2loading:response',response);
-      return response || $q.when(response);
-    },
-
-    responseError: function(rejection) {
-      $rootScope.$broadcast('ng2loading:responseError',rejection);
-      return $q.reject(rejection);
-    }
-  };
 }]);
 });
-require.register("ng2-loading/directives/loading-curtain.js", function(exports, require, module){
+require.register("compose/routes.js", function(exports, require, module){
+angular.module('compose')
+.config(['$routeProvider', function ($routeProvider) {
+  $routeProvider
+    .when('/compose', {
+      controller: 'compose',
+      template: require('./views/compose'),
+      private: true
+    })
+}]);
+});
+require.register("compose/views/compose.js", function(exports, require, module){
+module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul ng-init="users=[{online: true, username: \'colo\'}, {online: false, username:\'aleostera\'}]">\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.online}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.online}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" required></textarea>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
+});
+require.register("compose/controllers/compose.js", function(exports, require, module){
 /**
- * @ngdoc directive
- * @name ng2Core.directives:loadingCurtain
+ * @name compose.controllers:compose
+ */
+angular.module('compose')
+  .controller('compose',['$scope', 'Message'
+  , function ($scope, Message) {
+    $scope.message = {
+      text: "",
+      to: []
+    };
+
+    $scope.send = function () {
+      message = angular.copy($scope.message);
+      message.to = message.to.map(function (user) {
+        return user.username;
+      });
+      Message.send(message)
+        .then(function (res) {
+          console.log("Message:success",res);
+          // $scope.message = null;
+        }, function (error) {
+          console.log("Message:error",error);
+        });
+    };
+  }]);
+});
+require.register("compose/services/message.js", function(exports, require, module){
+/**
+ * @ngdoc service
+ * @name compose.services:send
  * @description
  * ...
  */
-angular.module('ng2Loading')
-  .directive('loadingCurtain',['$rootScope', function ($rootScope) {
-    'use strict';
-
-    return {
-      priority: 0,
-      template: require('../views/loading-curtain'),
-      restrict: 'E',
-      replace: true,
-      link: function(scope, element, attr) {
-        $rootScope.$on('ng2loading:request', function (event, data) {
-          element.addClass('show')
+angular
+.module('compose')
+.factory('Message', ['$http', '$q', function ($http, $q) {
+  return {
+    send: function (message) {
+      var deferred = $q.defer();
+      $http.post('http://halo_api.leostera.com:8080/messages', message)
+        .success(function (res) {
+          console.log("OK", res);
+          deferred.resolve(res);
+        }, function (error) {
+          console.log("SHIT ERROR", error)
+          deferred.reject(error);
         });
-      }
-    };
+      return deferred.promise;
+    }
   }
-]);
+}]);
 });
-require.register("ng2-loading/views/loading-curtain.js", function(exports, require, module){
-module.exports = '<h3>Loading...</h3>';
-});
-require.register("ng2-loading/views/loading-curtain.js", function(exports, require, module){
-module.exports = '<h3>Loading...</h3>';
-});
-require.register("user/index.js", function(exports, require, module){
-// auto-exports //
-
-var app = angular.module('user', ['ngRoute']);
-});
-require.register("user/controllers/inbox.js", function(exports, require, module){
-/**
- * @name user.controllers:inbox
- */
-angular.module('user')
-  .controller('inbox',['$scope'
-  , function ($scope) {
-    $scope.message = 'Welcome to Inbox';
-  }]);
-});
-require.register("user/views/inbox.js", function(exports, require, module){
-module.exports = '<h2>inbox</h2>\n<section>\n  {{message}}\n</section>';
-});
-require.register("user/views/inbox.js", function(exports, require, module){
-module.exports = '<h2>inbox</h2>\n<section>\n  {{message}}\n</section>';
+require.register("compose/views/compose.js", function(exports, require, module){
+module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul ng-init="users=[{online: true, username: \'colo\'}, {online: false, username:\'aleostera\'}]">\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.online}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.online}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" required></textarea>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
 
 
@@ -68876,6 +68950,14 @@ require.alias("ng2-auth-facebook/providers/facebook.js", "undefined/deps/ng2Auth
 require.alias("ng2-auth-facebook/index.js", "undefined/deps/ng2AuthFacebook/index.js");
 require.alias("ng2-auth-facebook/index.js", "ng2AuthFacebook/index.js");
 require.alias("ng2-auth-facebook/index.js", "ng2-auth-facebook/index.js");
+require.alias("ng2-loading/index.js", "undefined/deps/ng2Loading/index.js");
+require.alias("ng2-loading/config.js", "undefined/deps/ng2Loading/config.js");
+require.alias("ng2-loading/services/interceptor.js", "undefined/deps/ng2Loading/services/interceptor.js");
+require.alias("ng2-loading/directives/loading-curtain.js", "undefined/deps/ng2Loading/directives/loading-curtain.js");
+require.alias("ng2-loading/views/loading-curtain.js", "undefined/deps/ng2Loading/views/loading-curtain.js");
+require.alias("ng2-loading/index.js", "undefined/deps/ng2Loading/index.js");
+require.alias("ng2-loading/index.js", "ng2Loading/index.js");
+require.alias("ng2-loading/index.js", "ng2-loading/index.js");
 require.alias("ng2-debug/index.js", "undefined/deps/ng2Debug/index.js");
 require.alias("ng2-debug/config.js", "undefined/deps/ng2Debug/config.js");
 require.alias("ng2-debug/providers/events.js", "undefined/deps/ng2Debug/providers/events.js");
@@ -68911,17 +68993,12 @@ require.alias("leostera-angular.js/build/angular-touch.js", "ng2-core/deps/angul
 require.alias("leostera-angular.js/index.js", "ng2-core/deps/angular/index.js");
 
 require.alias("ng2-core/index.js", "ng2-core/index.js");
-require.alias("ng2-loading/index.js", "undefined/deps/ng2Loading/index.js");
-require.alias("ng2-loading/config.js", "undefined/deps/ng2Loading/config.js");
-require.alias("ng2-loading/services/interceptor.js", "undefined/deps/ng2Loading/services/interceptor.js");
-require.alias("ng2-loading/directives/loading-curtain.js", "undefined/deps/ng2Loading/directives/loading-curtain.js");
-require.alias("ng2-loading/views/loading-curtain.js", "undefined/deps/ng2Loading/views/loading-curtain.js");
-require.alias("ng2-loading/index.js", "undefined/deps/ng2Loading/index.js");
-require.alias("ng2-loading/index.js", "ng2Loading/index.js");
-require.alias("ng2-loading/index.js", "ng2-loading/index.js");
-require.alias("user/index.js", "undefined/deps/user/index.js");
-require.alias("user/controllers/inbox.js", "undefined/deps/user/controllers/inbox.js");
-require.alias("user/views/inbox.js", "undefined/deps/user/views/inbox.js");
-require.alias("user/index.js", "undefined/deps/user/index.js");
-require.alias("user/index.js", "user/index.js");
-require.alias("user/index.js", "user/index.js");
+require.alias("compose/index.js", "undefined/deps/compose/index.js");
+require.alias("compose/config.js", "undefined/deps/compose/config.js");
+require.alias("compose/routes.js", "undefined/deps/compose/routes.js");
+require.alias("compose/views/compose.js", "undefined/deps/compose/views/compose.js");
+require.alias("compose/controllers/compose.js", "undefined/deps/compose/controllers/compose.js");
+require.alias("compose/services/message.js", "undefined/deps/compose/services/message.js");
+require.alias("compose/index.js", "undefined/deps/compose/index.js");
+require.alias("compose/index.js", "compose/index.js");
+require.alias("compose/index.js", "compose/index.js");
