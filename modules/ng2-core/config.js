@@ -15,7 +15,7 @@ angular.module('ng2Core')
   });
 
   ng2wsProvider.setUrl("ws://halo_api.leostera.com:8080");
-
+  // ng2wsProvider.setRetriesNumber(5);
 }])
 
 .run(function (ng2ws) {
