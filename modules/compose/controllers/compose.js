@@ -7,7 +7,11 @@ angular.module('compose')
 
     $scope.users = [];
 
-    ws.send('user:online');
+    ws.send('user:list');
+
+    ws.on('user:list', function (users) {
+      $scope.users = users;
+    });
 
     ws.on('user:connect', function (user) {
       if(_.isEmpty(_.where($scope.users, user))) {
