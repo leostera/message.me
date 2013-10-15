@@ -1,0 +1,23 @@
+{
+  "name": "navbar",
+  "repo": "ng2/message.me-navbar",
+  "description": "",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "ng2/auth": "*",
+    "ng2/auth-facebook": "*",
+    "enricomarino/foundation": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "directives/navbar.js",
+    "views/navbar.js"
+  ],
+  "styles": [
+    "styles/navbar.css"
+  ]
+}

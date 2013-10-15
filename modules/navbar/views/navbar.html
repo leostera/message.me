@@ -1,0 +1,39 @@
+<nav class="top-bar" style="">
+    <ul class="title-area">
+      <!-- Title Area -->
+      <li class="name">
+        <h1>
+          <a href="/" ng-click="selected=false">
+            message.me
+          </a>
+        </h1>
+      </li>
+      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+    </ul>
+
+  <section class="top-bar-section">
+      <!-- Left Nav Section -->
+      <ul class="left menu">
+        <li ng-repeat="item in menu" class="fade">
+          <a href="/{{item}}" ng-click='$parent.selected="{{item}}"' ng-class="{'active': selected==item}">
+            {{item}}
+          </a>
+        </li>
+      </ul>
+
+      <!-- Right Nav Section -->
+      <ul class="right">
+        <li class="has-dropdown">
+          <a href="#">
+            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">
+            {{ user.username || "Login" }}
+          </a>
+          <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>
+            <li><label>Login with</label></li>
+            <li><a ng-click="login()" ng-hide="user.username">Login with Facebook</a></li>
+            <li class="divider"></li>
+            <li><a ng-click="logout()" ng-show="user.username">Logout</a></li>
+          </ul>
+        </li>
+      </ul>
+    </section></nav>
