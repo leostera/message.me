@@ -19,7 +19,6 @@ module.exports = function (appName, deps, coreDeps) {
   require('./services/user-service');
   require('./controllers/error');
   require('./controllers/welcome');
-  require('./directives/navbar');
   require('./config');
   require('./routes');
 

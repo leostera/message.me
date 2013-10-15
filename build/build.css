@@ -4277,6 +4277,7 @@ table {
   .f-dropdown.large {
     max-width: 800px; }
 
+
 /*! normalize.css v2.1.2 | MIT License | git.io/normalize */
 /* ==========================================================================
    HTML5 display definitions
@@ -4637,6 +4638,119 @@ table {
   border-spacing: 0;
 }
 
+ng-view {
+  font-size: 1em;
+}
+
+* {
+  font-family: Bariol !important;
+  font-weight: bold !important;
+  font-size: 1.3em;
+}
+a {
+  cursor: pointer;
+}
+
+ng-view > aside {
+  min-height: 300px;
+  height: 300px;
+  max-height: 500px;
+  background-color: #e5edfc;
+  padding: 0 !important;
+}
+ng-view > aside h5,
+ng-view > aside h6 {
+  text-align: center;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  background-color: #598def;
+  color: whitesmoke;
+}
+ng-view > aside h6 {
+  font-size: 0.8em !important;
+}
+ng-view > aside h6:last-child {
+  bottom: 0;
+  position: absolute;
+}
+ng-view > aside input[type=search] {
+  background-color: #ffffff;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  font-size: 0.8em !important;
+  font-weight: normal !important;
+  border: 0 !important;
+}
+ng-view > aside ul > li {
+  padding: 0 20px;
+}
+ng-view > aside ul > li > span {
+  cursor: pointer;
+}
+ng-view > aside ul > li > i.status {
+  margin-top: 7px;
+}
+ng-view > section {
+  font-size: 1em;
+  max-height: 700px;
+}
+ng-view > section ng-form label.good {
+  float: left;
+  padding: 15px;
+}
+ng-view > section ng-form .left > textarea {
+  height: 300px;
+  resize: none;
+}
+ng-view > section ng-form .left > button {
+  float: right;
+  font-size: 0.7em;
+  font-weight: normal !important;
+  padding: 10px;
+  margin: 5px 0px;
+  color: whitesmoke;
+  background-color: #598def;
+  border: 0;
+}
+ng-view > section ng-form .left > button:hover {
+  background-color: #709df1;
+}
+ng-view ul {
+  margin: 15px auto;
+  list-style: none;
+  text-align: left;
+  font-size: 0.5em;
+  width: 100%;
+}
+ng-view ul li {
+  margin: 0;
+  color: #598def;
+}
+ng-view ul li > span {
+  font-size: 1.1em;
+}
+ng-view ul li > i.status {
+  display: block;
+  float: left;
+  margin: 4px;
+  margin-top: 15px;
+  width: 8px;
+  height: 8px;
+  border-radius: 8px;
+  font-style: normal;
+  font-size: 0.8em;
+  background-color: #cc0000;
+}
+ng-view ul li > i.status.online {
+  background-color: #8ac007;
+}
+ng-view ul li > i.mark {
+  cursor: pointer;
+}
+
+
 nav.top-bar {
   background-color: #598def;
 }
@@ -4763,116 +4877,4 @@ nav > section.top-bar-section > ul > li > a.active {
   width: 45px;
   margin-right: 10px;
   margin-left: -17px;
-}
-
-* {
-  font-family: Bariol !important;
-  font-weight: bold !important;
-  font-size: 1.3em;
-}
-a {
-  cursor: pointer;
-}
-
-ng-view {
-  font-size: 1em;
-}
-
-ng-view > aside {
-  min-height: 300px;
-  height: 300px;
-  max-height: 500px;
-  background-color: #e5edfc;
-  padding: 0 !important;
-}
-ng-view > aside h5,
-ng-view > aside h6 {
-  text-align: center;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  background-color: #598def;
-  color: whitesmoke;
-}
-ng-view > aside h6 {
-  font-size: 0.8em !important;
-}
-ng-view > aside h6:last-child {
-  bottom: 0;
-  position: absolute;
-}
-ng-view > aside input[type=search] {
-  background-color: #ffffff;
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  font-size: 0.8em !important;
-  font-weight: normal !important;
-  border: 0 !important;
-}
-ng-view > aside ul > li {
-  padding: 0 20px;
-}
-ng-view > aside ul > li > span {
-  cursor: pointer;
-}
-ng-view > aside ul > li > i.status {
-  margin-top: 7px;
-}
-ng-view > section {
-  font-size: 1em;
-  max-height: 700px;
-}
-ng-view > section ng-form label.good {
-  float: left;
-  padding: 15px;
-}
-ng-view > section ng-form .left > textarea {
-  height: 300px;
-  resize: none;
-}
-ng-view > section ng-form .left > button {
-  float: right;
-  font-size: 0.7em;
-  font-weight: normal !important;
-  padding: 10px;
-  margin: 5px 0px;
-  color: whitesmoke;
-  background-color: #598def;
-  border: 0;
-}
-ng-view > section ng-form .left > button:hover {
-  background-color: #709df1;
-}
-ng-view ul {
-  margin: 15px auto;
-  list-style: none;
-  text-align: left;
-  font-size: 0.5em;
-  width: 100%;
-}
-ng-view ul li {
-  margin: 0;
-  color: #598def;
-}
-ng-view ul li > span {
-  font-size: 1.1em;
-}
-ng-view ul li > i.status {
-  display: block;
-  float: left;
-  margin: 4px;
-  margin-top: 15px;
-  width: 8px;
-  height: 8px;
-  border-radius: 8px;
-  font-style: normal;
-  font-size: 0.8em;
-  background-color: #cc0000;
-}
-ng-view ul li > i.status.online {
-  background-color: #8ac007;
-}
-ng-view ul li > i.mark {
-  cursor: pointer;
 }

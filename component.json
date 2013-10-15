@@ -6,12 +6,16 @@
     "ng2/loading": "*",
     "ng2/debug": "*",
     "ng2/ws": "*",
-    "enricomarino/foundation": "*"
+    "enricomarino/foundation": "*",
+    "lodash/lodash": "*"
   },
   "remotes": [],
   "local": [
     "ng2-core",
-    "compose"
+    "main",
+    "compose",
+    "inbox",
+    "navbar"
   ],
   "paths": [
     "./components",

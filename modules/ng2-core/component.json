@@ -1,6 +1,5 @@
 {
-  "name": "ng2Core",
-  "repo": "ng2/core",
+  "name": "main",
   "description": "",
   "version": "0.0.2",
   "keywords": [],
@@ -18,14 +17,9 @@
     "views/error.js",
     "controllers/welcome.js",
     "views/welcome.js",
-    "services/user-service.js",
-    "views/navbar.js",
-    "directives/navbar.js"
+    "services/user-service.js"
   ],
   "styles": [
-    "styles/normalize.css",
-    "styles/navbar.css",
-    "styles/fonts.css",
-    "styles/main.css"
+    "styles/normalize.css"
   ]
 }

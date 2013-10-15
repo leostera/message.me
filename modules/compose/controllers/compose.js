@@ -5,14 +5,14 @@ angular.module('compose')
   .controller('compose',['$scope', 'Message', 'ng2ws'
   , function ($scope, Message, ws) {
 
-    if($scope.users === undefined) {
-      $scope.users = [];
-    }
+    $scope.users = [];
 
     ws.send('user:online');
 
     ws.on('user:connect', function (user) {
-      $scope.users.push(user);
+      if(_.isEmpty(_.where($scope.users, user))) {
+        $scope.users.push(user);
+      }
     });
 
     ws.on('user:disconnect', function (user) {
