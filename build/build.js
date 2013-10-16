@@ -201,7 +201,7 @@ require.relative = function(parent) {
 };
 require.register("leostera-angular.js/build/angular.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1803,11 +1803,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.0-84ce809',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.0-0ec782f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 0,
-  codeName: 'ferocious-twitch'
+  codeName: ''
 };
 
 
@@ -9262,6 +9262,7 @@ Parser.prototype = {
       }
       var fnPtr = fn(scope, locals, context) || noop;
 
+      ensureSafeObject(context, parser.text);
       ensureSafeObject(fnPtr, parser.text);
 
       // IE stupidity! (IE doesn't have apply for some native functions)
@@ -10272,10 +10273,14 @@ function qFactory(nextTick, exceptionHandler) {
  * @methodOf ng.$rootScopeProvider
  * @description
  *
- * Sets the number of digest iterations the scope should attempt to execute before giving up and
- * assuming that the model is unstable.
+ * Sets the number of `$digest` iterations the scope should attempt to execute before giving up and assuming that the model is unstable.
  *
  * The current default is 10 iterations.
+ *
+ * In complex applications it's possible that the dependencies between `$watch`s will result in several digest iterations.
+ * However if an application needs more than the default 10 digest iterations for its model to stabilize then you should investigate what is causing the model to continuously change during the digest.
+ *
+ * Increasing the TTL could have performance implications, so you should not change it without proper justification.
  *
  * @param {number} limit The number of digest iterations.
  */
@@ -19349,7 +19354,7 @@ module.exports = window.angular;
 });
 require.register("leostera-angular.js/build/angular-animate.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20196,7 +20201,7 @@ angular.module('ngAnimate', ['ng'])
 });
 require.register("leostera-angular.js/build/angular-cookies.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20399,7 +20404,7 @@ angular.module('ngCookies', ['ng']).
 });
 require.register("leostera-angular.js/build/angular-loader.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20721,7 +20726,7 @@ angular.Module;
 });
 require.register("leostera-angular.js/build/angular-mocks.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  *
@@ -22816,7 +22821,7 @@ angular.mock.clearDataCache = function() {
 });
 require.register("leostera-angular.js/build/angular-resource.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -23376,7 +23381,7 @@ angular.module('ngResource', ['ng']).
 });
 require.register("leostera-angular.js/build/angular-route.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -24243,7 +24248,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $compile,   $controller,   
 });
 require.register("leostera-angular.js/build/angular-sanitize.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34595,7 +34600,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 })( window );
 
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -36198,11 +36203,11 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.0-84ce809',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.0-0ec782f',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 0,
-  codeName: 'ferocious-twitch'
+  codeName: ''
 };
 
 
@@ -43657,6 +43662,7 @@ Parser.prototype = {
       }
       var fnPtr = fn(scope, locals, context) || noop;
 
+      ensureSafeObject(context, parser.text);
       ensureSafeObject(fnPtr, parser.text);
 
       // IE stupidity! (IE doesn't have apply for some native functions)
@@ -44667,10 +44673,14 @@ function qFactory(nextTick, exceptionHandler) {
  * @methodOf ng.$rootScopeProvider
  * @description
  *
- * Sets the number of digest iterations the scope should attempt to execute before giving up and
- * assuming that the model is unstable.
+ * Sets the number of `$digest` iterations the scope should attempt to execute before giving up and assuming that the model is unstable.
  *
  * The current default is 10 iterations.
+ *
+ * In complex applications it's possible that the dependencies between `$watch`s will result in several digest iterations.
+ * However if an application needs more than the default 10 digest iterations for its model to stabilize then you should investigate what is causing the model to continuously change during the digest.
+ *
+ * Increasing the TTL could have performance implications, so you should not change it without proper justification.
  *
  * @param {number} limit The number of digest iterations.
  */
@@ -55936,7 +55946,7 @@ angular.element(document).find('head').prepend('<style type="text/css">@charset 
 });
 require.register("leostera-angular.js/build/angular-touch.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-84ce809
+ * @license AngularJS v1.2.0-0ec782f
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56867,7 +56877,7 @@ angular
             $rootScope.$broadcast("ng2auth:routes::redirect", "/login");
             $location.path('/login');
             $location.search({
-              redirect: encodeURIComponent(redirect)
+              redirect: redirect
             });
             return;
           };
@@ -56922,7 +56932,7 @@ angular
               }, function (error) {
                 $rootScope.$broadcast("ng2auth:routes::guest-access", next);
                 $rootScope.$broadcast('ng2auth:routes::login-start');
-                handlers.loginStart(next.substr(1));
+                handlers.loginStart(next);
               });
             } else {
               $rootScope.$broadcast("ng2auth:routes::error", "Route "+next+" does not exist.");
@@ -57556,10 +57566,8 @@ angular
       var apply = function (callback) {
         return function (data) {
           return $timeout(function () {
-            $rootScope.$apply(function () {
-              callback(data);
-            });
-          },0);
+            callback(data);
+          });
         };
       };
 
@@ -75662,27 +75670,31 @@ require.register("lodash-lodash/dist/lodash.compat.js", function(exports, requir
 }.call(this));
 
 });
-require.register("ng2-core/routes.js", function(exports, require, module){
-angular.module('ng2Core')
-.config(['$routeProvider', function ($routeProvider) {
-  $routeProvider
-    .when('/', {
-      controller: 'welcome',
-      template: require('./views/welcome')
-    })
-    .when('/error', {
-      controller: 'error',
-      template: require('./views/error')
-    });
-}]);
+require.register("shared/index.js", function(exports, require, module){
+// auto-exports //
+
+var app = angular.module('mme.shared',
+  [
+    'ng2ws',
+    'ng2Auth',
+    'ng2AuthFacebook',
+    'ng2Loading',
+    'ng2Debug',
+  ]);
+
+require('./controllers/login');
+require('./services/online-users');
+require('./services/user-service');
+require('./config');
+require('./routes');
 });
-require.register("ng2-core/config.js", function(exports, require, module){
-angular.module('ng2Core')
+require.register("shared/config.js", function(exports, require, module){
+angular.module('mme.shared')
 .config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider', 'ng2wsProvider'
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  DebugEventsProvider.setFilter('^ng2ws');
+  DebugEventsProvider.setFilter('^ng2auth');
 
   $locationProvider.html5Mode(true);
 
@@ -75697,72 +75709,32 @@ angular.module('ng2Core')
   // ng2wsProvider.setRetriesNumber(5);
 }])
 
-.run(function ($rootScope, ng2ws) {
+.run(['$rootScope', '$location','$timeout', 'ng2ws'
+, function ($rootScope, $location, $timeout, ng2ws) {
   $rootScope.$on('ng2auth:login::success', function (user) {
     ng2ws.open();
   });
 
   $rootScope.$on('ng2auth:logout::success', function (user) {
+    $timeout(function () {
+      $location.path('/login').replace();
+    });
     ng2ws.close();
   });
+}]);
 });
+require.register("shared/routes.js", function(exports, require, module){
+angular.module('mme.shared')
+.config(['$routeProvider', function ($routeProvider) {
+  $routeProvider
+    .when('/login', {
+      controller: 'login',
+      template: require('./views/login')
+    });
+}]);
 });
-require.register("ng2-core/index.js", function(exports, require, module){
-// auto-exports //
-
-module.exports = function (appName, deps, coreDeps) {
-
-  coreDeps = coreDeps || [];
-
-  var core = angular.module('ng2Core',
-  [ 'ngRoute'
-  , 'ngAnimate'
-  , 'ngResource'
-  , 'ngSanitize'
-  , 'ngCookies'
-  ].concat(coreDeps));
-
-  deps = deps || [];
-
-  var app = angular.module(appName, ['ng2Core','ngRoute'].concat(deps));
-
-  require('./services/user-service');
-  require('./controllers/error');
-  require('./controllers/welcome');
-  require('./config');
-  require('./routes');
-
-  return app;
-};
-});
-require.register("ng2-core/controllers/error.js", function(exports, require, module){
-/**
- * @name leostera.controllers:error
- */
-angular.module('ng2Core')
-  .controller('error',['$scope'
-  , function ($scope) {
-    $scope.message = 'Welcome to Error';
-  }]);
-});
-require.register("ng2-core/views/error.js", function(exports, require, module){
-module.exports = '<h2>error</h2>\n<section>\n  {{message}}\n</section>';
-});
-require.register("ng2-core/controllers/welcome.js", function(exports, require, module){
-/**
- * @name ng2Core.controllers:welcome
- */
-angular.module('ng2Core')
-  .controller('welcome',['$scope', 'OAuth2'
-  , function ($scope, OAuth2) {
-
-  }]);
-});
-require.register("ng2-core/views/welcome.js", function(exports, require, module){
-module.exports = '<h2>welcome</h2>';
-});
-require.register("ng2-core/services/user-service.js", function(exports, require, module){
-angular.module('ng2Core')
+require.register("shared/services/user-service.js", function(exports, require, module){
+angular.module('mme.shared')
 .factory('UserService', ['$q', '$http', '$timeout'
 , function ($q, $http, $timeout) {
   var user;
@@ -75821,21 +75793,83 @@ angular.module('ng2Core')
   };
 }]);
 });
-require.register("ng2-core/views/error.js", function(exports, require, module){
-module.exports = '<h2>error</h2>\n<section>\n  {{message}}\n</section>';
+require.register("shared/services/online-users.js", function(exports, require, module){
+/**
+ * @ngdoc service
+ * @name compose.services:OnlineUsers
+ * @description
+ * ...
+ */
+angular
+.module('mme.shared')
+.factory('OnlineUsersService', function ($rootScope, $q, ng2ws) {
+
+  var users = [];
+
+  ng2ws.send('users:online');
+  ng2ws.on('users:online', function (onlineUsers) {
+    users = onlineUsers;
+  });
+
+  ng2ws.on('users:connect', function (user) {
+    if(_.isEmpty(_.where(users, user))) {
+      users.push(user);
+      $rootScope.$broadcast('onlineUsers::connect', user);
+    }
+  });
+
+  ng2ws.on('users:disconnect', function (user) {
+    $rootScope.$broadcast('onlineUsers::disconnect', user)
+    users = users.filter(function (u) {
+      return u._id !== user._id;
+    });
+  });
+
+  return {
+    update: function () {
+      ng2ws.send('users:online');
+    },
+    getUsers: function () {
+      var deferred = $q.defer();
+      if(users.length === 0) {
+        ng2ws.on('users:online', function (users) {
+          deferred.resolve(users);
+        });
+        ng2ws.send('users:online');
+      } else {
+        deferred.resolve(users);
+      }
+      return deferred.promise;
+    }
+  };
 });
-require.register("ng2-core/views/welcome.js", function(exports, require, module){
-module.exports = '<h2>welcome</h2>';
 });
-require.register("main/index.js", function(exports, require, module){
+require.register("shared/controllers/login.js", function(exports, require, module){
+/**
+ * @name shared.controllers:login
+ */
+angular.module('mme.shared')
+  .controller('login',['$scope', 'OAuth2'
+  , function ($scope, OAuth2) {
+    $scope.login = function () {
+      OAuth2.login('facebook');
+    }
+  }]);
+});
+require.register("shared/views/login.js", function(exports, require, module){
+module.exports = '<section class="large-6 large-offset-3 columns">\n  <h1>Hi,\n  <h3>Please do everyone else a favor and login.</h3>\n  <button ng-click="login()" class="large centered button">\n    Login with Facebook\n  </button>\n\n</section>';
+});
+require.register("shared/views/login.js", function(exports, require, module){
+module.exports = '<section class="large-6 large-offset-3 columns">\n  <h1>Hi,\n  <h3>Please do everyone else a favor and login.</h3>\n  <button ng-click="login()" class="large centered button">\n    Login with Facebook\n  </button>\n\n</section>';
+});
+require.register("messages/index.js", function(exports, require, module){
 // auto-exports //
 
-var app = angular.module('main', ['ngRoute']);
-});
-require.register("compose/index.js", function(exports, require, module){
-// auto-exports //
-
-var app = angular.module('compose', ['ngRoute']);
+var app = angular.module('mme.messages',
+  [
+    'ngRoute'
+  , 'mme.shared'
+  ]);
 
 require('./controllers/compose');
 require('./services/message');
@@ -75843,56 +75877,53 @@ require('./config');
 require('./routes');
 
 });
-require.register("compose/config.js", function(exports, require, module){
-angular.module('compose')
+require.register("messages/config.js", function(exports, require, module){
+angular.module('mme.messages')
 .config([ '$locationProvider'
   , function ($locationProvider) {
 
 }]);
 });
-require.register("compose/routes.js", function(exports, require, module){
-angular.module('compose')
+require.register("messages/routes.js", function(exports, require, module){
+angular.module('mme.messages')
 .config(['$routeProvider', function ($routeProvider) {
   $routeProvider
-    .when('/compose', {
+    .when('/', {
       controller: 'compose',
       template: require('./views/compose'),
       private: true
-    })
+    });
 }]);
 });
-require.register("compose/views/compose.js", function(exports, require, module){
-module.exports = '<pre>{{users|json}}</pre>\n<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <!-- <online-users ng-model="to"></online-users> -->\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
+require.register("messages/views/compose.js", function(exports, require, module){
+module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <!-- <online-users ng-model="to"></online-users> -->\n  <ul>\n    <li ng-repeat="user in filtered_users = (OnlineUsersService.getUsers() | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
-require.register("compose/controllers/compose.js", function(exports, require, module){
+require.register("messages/controllers/compose.js", function(exports, require, module){
 /**
  * @name compose.controllers:compose
  */
-angular.module('compose')
-  .controller('compose',['$scope', '$timeout', 'Message', 'ng2ws', 'UserService'
-  , function ($scope, $timeout, Message, ws, UserService) {
+angular.module('mme.messages')
+  .controller('compose',['$scope', '$timeout', 'Message', 'OnlineUsersService', 'UserService'
+  , function ($scope, $timeout, Message, OnlineUsersService, UserService) {
 
-    $scope.users = [];
+    $scope.users = []
 
-    $scope.$watch('users', function (users) {
-      console.log(users);
-    });
-
-    ws.send('users:online');
-    ws.on('users:online', function (users) {
-      $scope.users = users;
-    });
-
-    ws.on('users:connect', function (user) {
-      UserService.getUser().then(function (me) {
-        if(me._id === user._id) return;
-        if(_.isEmpty(_.where($scope.users, user))) {
-          $scope.users.push(user);
-        }
+    UserService.getUser().then(function (me) {
+      $scope.me = me;
+      OnlineUsersService.getUsers(function (users) {
+        $scope.users = users.filter(function (user) {
+          return user._id !== me._id;
+        });
       });
     });
 
-    ws.on('users:disconnect', function (user) {
+    $scope.$on('onlineUsers::connect', function (user) {
+      if(_.isEmpty(_.where($scope.users, user))) {
+        $scope.users.push(user);
+      }
+    });
+
+    $scope.$on('onlineUsers::disconnect', function (user) {
       $scope.users = $scope.users.filter(function (u) {
         return u._id !== user._id;
       });
@@ -75918,7 +75949,7 @@ angular.module('compose')
     };
   }]);
 });
-require.register("compose/services/message.js", function(exports, require, module){
+require.register("messages/services/message.js", function(exports, require, module){
 /**
  * @ngdoc service
  * @name compose.services:send
@@ -75926,7 +75957,7 @@ require.register("compose/services/message.js", function(exports, require, modul
  * ...
  */
 angular
-.module('compose')
+.module('mme.messages')
 .factory('Message', ['$http', '$q', function ($http, $q) {
   return {
     send: function (message) {
@@ -75944,18 +75975,13 @@ angular
   }
 }]);
 });
-require.register("compose/views/compose.js", function(exports, require, module){
-module.exports = '<pre>{{users|json}}</pre>\n<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <!-- <online-users ng-model="to"></online-users> -->\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
-});
-require.register("inbox/index.js", function(exports, require, module){
-// auto-exports //
-
-var app = angular.module('inbox', ['ngRoute']);
+require.register("messages/views/compose.js", function(exports, require, module){
+module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <!-- <online-users ng-model="to"></online-users> -->\n  <ul>\n    <li ng-repeat="user in filtered_users = (OnlineUsersService.getUsers() | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
 require.register("navbar/index.js", function(exports, require, module){
 // auto-exports //
 
-var app = angular.module('navbar', ['ngRoute']);
+var app = angular.module('mme.navbar', ['ng2Auth']);
 
 require('./directives/navbar');
 });
@@ -75966,7 +75992,7 @@ require.register("navbar/directives/navbar.js", function(exports, require, modul
  * @description
  * Show nav bar, show Login with Facebook button.
  */
-angular.module('ng2Core')
+angular.module('mme.navbar')
   .directive('navbar',['OAuth2', '$location', function (OAuth2, $location) {
     'use strict';
 
@@ -75983,7 +76009,8 @@ angular.module('ng2Core')
           scope.menu = []
           scope.user = typeof data === 'string' ? null : data;
           if(scope.user && scope.user.username) {
-            scope.menu = ['inbox','compose','about']
+            scope.menu = [
+              {name: 'main', url: '/'},'about']
             scope.user.picture = 'https://graph.facebook.com/'+data.username+'/picture';
           } else {
             $location.path('/');
@@ -76011,13 +76038,11 @@ angular.module('ng2Core')
 ]);
 });
 require.register("navbar/views/navbar.js", function(exports, require, module){
-module.exports = '<nav class="top-bar" style="">\n    <ul class="title-area">\n      <!-- Title Area -->\n      <li class="name">\n        <h1>\n          <a href="/" ng-click="selected=false">\n            message.me\n          </a>\n        </h1>\n      </li>\n      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>\n    </ul>\n\n  <section class="top-bar-section">\n      <!-- Left Nav Section -->\n      <ul class="left menu">\n        <li ng-repeat="item in menu" class="fade">\n          <a href="/{{item}}" ng-click=\'$parent.selected="{{item}}"\' ng-class="{\'active\': selected==item}">\n            {{item}}\n          </a>\n        </li>\n      </ul>\n\n      <!-- Right Nav Section -->\n      <ul class="right">\n        <li class="has-dropdown">\n          <a href="#">\n            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">\n            {{ user.username || "Login" }}\n          </a>\n          <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>\n            <li><label>Login with</label></li>\n            <li><a ng-click="login()" ng-hide="user.username">Login with Facebook</a></li>\n            <li class="divider"></li>\n            <li><a ng-click="logout()" ng-show="user.username">Logout</a></li>\n          </ul>\n        </li>\n      </ul>\n    </section></nav>';
+module.exports = '<nav class="top-bar" style="">\n    <ul class="title-area">\n      <!-- Title Area -->\n      <li class="name">\n        <h1>\n          <a href="/" ng-click="selected=false">\n            message.me\n          </a>\n        </h1>\n      </li>\n      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>\n    </ul>\n\n  <section class="top-bar-section">\n      <!-- Left Nav Section -->\n      <ul class="left menu">\n        <li ng-repeat="item in menu" class="fade">\n          <a href="{{item.url || \'/\'+item}}" ng-click=\'$parent.selected="{{item.name || item}}"\' ng-class="{\'active\': selected==(item.name||item)}">\n            {{item.name || item}}\n          </a>\n        </li>\n      </ul>\n\n      <!-- Right Nav Section -->\n      <ul class="right">\n        <li class="has-dropdown">\n          <a href="#">\n            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">\n            {{ user.username || "Login" }}\n          </a>\n          <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>\n            <li><label>Login with</label></li>\n            <li><a ng-click="login()" ng-hide="user.username">Login with Facebook</a></li>\n            <li class="divider"></li>\n            <li><a ng-click="logout()" ng-show="user.username">Logout</a></li>\n          </ul>\n        </li>\n      </ul>\n    </section></nav>';
 });
 require.register("navbar/views/navbar.js", function(exports, require, module){
-module.exports = '<nav class="top-bar" style="">\n    <ul class="title-area">\n      <!-- Title Area -->\n      <li class="name">\n        <h1>\n          <a href="/" ng-click="selected=false">\n            message.me\n          </a>\n        </h1>\n      </li>\n      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>\n    </ul>\n\n  <section class="top-bar-section">\n      <!-- Left Nav Section -->\n      <ul class="left menu">\n        <li ng-repeat="item in menu" class="fade">\n          <a href="/{{item}}" ng-click=\'$parent.selected="{{item}}"\' ng-class="{\'active\': selected==item}">\n            {{item}}\n          </a>\n        </li>\n      </ul>\n\n      <!-- Right Nav Section -->\n      <ul class="right">\n        <li class="has-dropdown">\n          <a href="#">\n            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">\n            {{ user.username || "Login" }}\n          </a>\n          <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>\n            <li><label>Login with</label></li>\n            <li><a ng-click="login()" ng-hide="user.username">Login with Facebook</a></li>\n            <li class="divider"></li>\n            <li><a ng-click="logout()" ng-show="user.username">Logout</a></li>\n          </ul>\n        </li>\n      </ul>\n    </section></nav>';
+module.exports = '<nav class="top-bar" style="">\n    <ul class="title-area">\n      <!-- Title Area -->\n      <li class="name">\n        <h1>\n          <a href="/" ng-click="selected=false">\n            message.me\n          </a>\n        </h1>\n      </li>\n      <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>\n    </ul>\n\n  <section class="top-bar-section">\n      <!-- Left Nav Section -->\n      <ul class="left menu">\n        <li ng-repeat="item in menu" class="fade">\n          <a href="{{item.url || \'/\'+item}}" ng-click=\'$parent.selected="{{item.name || item}}"\' ng-class="{\'active\': selected==(item.name||item)}">\n            {{item.name || item}}\n          </a>\n        </li>\n      </ul>\n\n      <!-- Right Nav Section -->\n      <ul class="right">\n        <li class="has-dropdown">\n          <a href="#">\n            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">\n            {{ user.username || "Login" }}\n          </a>\n          <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>\n            <li><label>Login with</label></li>\n            <li><a ng-click="login()" ng-hide="user.username">Login with Facebook</a></li>\n            <li class="divider"></li>\n            <li><a ng-click="logout()" ng-show="user.username">Logout</a></li>\n          </ul>\n        </li>\n      </ul>\n    </section></nav>';
 });
-
-
 
 
 
@@ -76086,46 +76111,33 @@ require.alias("lodash-lodash/index.js", "undefined/deps/lodash/index.js");
 require.alias("lodash-lodash/dist/lodash.compat.js", "undefined/deps/lodash/dist/lodash.compat.js");
 require.alias("lodash-lodash/index.js", "lodash/index.js");
 
-require.alias("ng2-core/routes.js", "undefined/deps/main/routes.js");
-require.alias("ng2-core/config.js", "undefined/deps/main/config.js");
-require.alias("ng2-core/index.js", "undefined/deps/main/index.js");
-require.alias("ng2-core/controllers/error.js", "undefined/deps/main/controllers/error.js");
-require.alias("ng2-core/views/error.js", "undefined/deps/main/views/error.js");
-require.alias("ng2-core/controllers/welcome.js", "undefined/deps/main/controllers/welcome.js");
-require.alias("ng2-core/views/welcome.js", "undefined/deps/main/views/welcome.js");
-require.alias("ng2-core/services/user-service.js", "undefined/deps/main/services/user-service.js");
-require.alias("ng2-core/index.js", "undefined/deps/main/index.js");
-require.alias("ng2-core/index.js", "main/index.js");
-require.alias("leostera-angular.js/build/angular.js", "ng2-core/deps/angular/build/angular.js");
-require.alias("leostera-angular.js/build/angular-animate.js", "ng2-core/deps/angular/build/angular-animate.js");
-require.alias("leostera-angular.js/build/angular-cookies.js", "ng2-core/deps/angular/build/angular-cookies.js");
-require.alias("leostera-angular.js/build/angular-loader.js", "ng2-core/deps/angular/build/angular-loader.js");
-require.alias("leostera-angular.js/build/angular-mocks.js", "ng2-core/deps/angular/build/angular-mocks.js");
-require.alias("leostera-angular.js/build/angular-resource.js", "ng2-core/deps/angular/build/angular-resource.js");
-require.alias("leostera-angular.js/build/angular-route.js", "ng2-core/deps/angular/build/angular-route.js");
-require.alias("leostera-angular.js/build/angular-sanitize.js", "ng2-core/deps/angular/build/angular-sanitize.js");
-require.alias("leostera-angular.js/build/angular-scenario.js", "ng2-core/deps/angular/build/angular-scenario.js");
-require.alias("leostera-angular.js/build/angular-touch.js", "ng2-core/deps/angular/build/angular-touch.js");
-require.alias("leostera-angular.js/index.js", "ng2-core/deps/angular/index.js");
-
-require.alias("ng2-core/index.js", "ng2-core/index.js");
-require.alias("main/index.js", "undefined/deps/main/index.js");
-require.alias("main/index.js", "undefined/deps/main/index.js");
-require.alias("main/index.js", "main/index.js");
-require.alias("main/index.js", "main/index.js");
-require.alias("compose/index.js", "undefined/deps/compose/index.js");
-require.alias("compose/config.js", "undefined/deps/compose/config.js");
-require.alias("compose/routes.js", "undefined/deps/compose/routes.js");
-require.alias("compose/views/compose.js", "undefined/deps/compose/views/compose.js");
-require.alias("compose/controllers/compose.js", "undefined/deps/compose/controllers/compose.js");
-require.alias("compose/services/message.js", "undefined/deps/compose/services/message.js");
-require.alias("compose/index.js", "undefined/deps/compose/index.js");
-require.alias("compose/index.js", "compose/index.js");
-require.alias("compose/index.js", "compose/index.js");
-require.alias("inbox/index.js", "undefined/deps/inbox/index.js");
-require.alias("inbox/index.js", "undefined/deps/inbox/index.js");
-require.alias("inbox/index.js", "inbox/index.js");
-require.alias("inbox/index.js", "inbox/index.js");
+require.alias("shared/index.js", "undefined/deps/shared/index.js");
+require.alias("shared/config.js", "undefined/deps/shared/config.js");
+require.alias("shared/routes.js", "undefined/deps/shared/routes.js");
+require.alias("shared/services/user-service.js", "undefined/deps/shared/services/user-service.js");
+require.alias("shared/services/online-users.js", "undefined/deps/shared/services/online-users.js");
+require.alias("shared/controllers/login.js", "undefined/deps/shared/controllers/login.js");
+require.alias("shared/views/login.js", "undefined/deps/shared/views/login.js");
+require.alias("shared/index.js", "undefined/deps/shared/index.js");
+require.alias("shared/index.js", "shared/index.js");
+require.alias("ng2-ws/index.js", "shared/deps/ng2ws/index.js");
+require.alias("ng2-ws/providers/ws.js", "shared/deps/ng2ws/providers/ws.js");
+require.alias("ng2-ws/index.js", "shared/deps/ng2ws/index.js");
+require.alias("ng2-ws/index.js", "ng2-ws/index.js");
+require.alias("shared/index.js", "shared/index.js");
+require.alias("messages/index.js", "undefined/deps/compose/index.js");
+require.alias("messages/config.js", "undefined/deps/compose/config.js");
+require.alias("messages/routes.js", "undefined/deps/compose/routes.js");
+require.alias("messages/views/compose.js", "undefined/deps/compose/views/compose.js");
+require.alias("messages/controllers/compose.js", "undefined/deps/compose/controllers/compose.js");
+require.alias("messages/services/message.js", "undefined/deps/compose/services/message.js");
+require.alias("messages/index.js", "undefined/deps/compose/index.js");
+require.alias("messages/index.js", "compose/index.js");
+require.alias("ng2-ws/index.js", "messages/deps/ng2ws/index.js");
+require.alias("ng2-ws/providers/ws.js", "messages/deps/ng2ws/providers/ws.js");
+require.alias("ng2-ws/index.js", "messages/deps/ng2ws/index.js");
+require.alias("ng2-ws/index.js", "ng2-ws/index.js");
+require.alias("messages/index.js", "messages/index.js");
 require.alias("navbar/index.js", "undefined/deps/navbar/index.js");
 require.alias("navbar/directives/navbar.js", "undefined/deps/navbar/directives/navbar.js");
 require.alias("navbar/views/navbar.js", "undefined/deps/navbar/views/navbar.js");

@@ -11,10 +11,8 @@
   },
   "remotes": [],
   "local": [
-    "ng2-core",
-    "main",
-    "compose",
-    "inbox",
+    "shared",
+    "messages",
     "navbar"
   ],
   "paths": [

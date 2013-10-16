@@ -1,1 +1,0 @@
-module.exports = '<h2>error</h2>\n<section>\n  {{message}}\n</section>';

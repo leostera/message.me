@@ -1,4 +1,4 @@
-<html ng-app="grabHalo">
+<html ng-app="mme">
 <head>
   <meta charset="UTF-8">
   <title>Welcome to message.me</title>
@@ -27,25 +27,17 @@
   require('ng2-loading');
   require('ng2-ws');
   // Add other requires here
-  bootstrap = require('ng2-core');
-  var app = bootstrap("grabHalo",
+  // bootstrap = require('ng2-core');
+  var app = angular.module("mme",
     [
-      'main',
-      'compose',
-      'navbar',
-      'inbox'
-    ], [
-      'ng2Auth',
-      'ng2AuthFacebook',
-      'ng2Debug',
-      'ng2ws',
-      'ng2Loading'
+      'mme.shared',
+      'mme.messages',
+      'mme.navbar'
     ]);
 
-  require('main');
-  require('compose');
+  require('shared');
+  require('messages');
   require('navbar');
-  require('inbox');
   </script>
 </body>
 </html>
