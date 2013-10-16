@@ -201,7 +201,7 @@ require.relative = function(parent) {
 };
 require.register("leostera-angular.js/build/angular.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -1803,7 +1803,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.0-6558496',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.0-84ce809',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 0,
@@ -17047,6 +17047,7 @@ forEach(
  *
  * @element ANY
  * @scope
+ * @priority 600
  * @param {expression} ngIf If the {@link guide/expression expression} is falsy then
  *     the element is removed from the DOM tree. If it is truthy a copy of the compiled
  *     eleent is added to the DOM tree.
@@ -17146,6 +17147,7 @@ var ngIfDirective = ['$animate', function($animate) {
  * The enter and leave animation occur concurrently.
  *
  * @scope
+ * @priority 400
  *
  * @param {string} ngInclude|src angular expression evaluating to URL. If the source is a string constant,
  *                 make sure you wrap it in quotes, e.g. `src="'myPartialTemplate.html'"`.
@@ -18427,6 +18429,7 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
  * </ANY>
  *
  * @scope
+ * @priority 800
  * @param {*} ngSwitch|on expression to match against <tt>ng-switch-when</tt>.
  * @paramDescription
  * On child elements add:
@@ -19346,7 +19349,7 @@ module.exports = window.angular;
 });
 require.register("leostera-angular.js/build/angular-animate.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20193,7 +20196,7 @@ angular.module('ngAnimate', ['ng'])
 });
 require.register("leostera-angular.js/build/angular-cookies.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20396,7 +20399,7 @@ angular.module('ngCookies', ['ng']).
 });
 require.register("leostera-angular.js/build/angular-loader.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -20718,7 +20721,7 @@ angular.Module;
 });
 require.register("leostera-angular.js/build/angular-mocks.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  *
@@ -22813,7 +22816,7 @@ angular.mock.clearDataCache = function() {
 });
 require.register("leostera-angular.js/build/angular-resource.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -23373,7 +23376,7 @@ angular.module('ngResource', ['ng']).
 });
 require.register("leostera-angular.js/build/angular-route.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -24014,6 +24017,7 @@ ngRouteModule.directive('ngView', ngViewFactory);
  * The enter and leave animation occur concurrently.
  *
  * @scope
+ * @priority 400
  * @example
     <example module="ngViewExample" deps="angular-route.js" animations="true">
       <file name="index.html">
@@ -24239,7 +24243,7 @@ function ngViewFactory(   $route,   $anchorScroll,   $compile,   $controller,   
 });
 require.register("leostera-angular.js/build/angular-sanitize.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -34591,7 +34595,7 @@ if ( typeof module === "object" && module && typeof module.exports === "object" 
 })( window );
 
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -36194,7 +36198,7 @@ function setupModuleLoader(window) {
  * - `codeName` – `{string}` – Code name of the release, such as "jiggling-armfat".
  */
 var version = {
-  full: '1.2.0-6558496',    // all of these placeholder strings will be replaced by grunt's
+  full: '1.2.0-84ce809',    // all of these placeholder strings will be replaced by grunt's
   major: 1,    // package task
   minor: 2,
   dot: 0,
@@ -51438,6 +51442,7 @@ forEach(
  *
  * @element ANY
  * @scope
+ * @priority 600
  * @param {expression} ngIf If the {@link guide/expression expression} is falsy then
  *     the element is removed from the DOM tree. If it is truthy a copy of the compiled
  *     eleent is added to the DOM tree.
@@ -51537,6 +51542,7 @@ var ngIfDirective = ['$animate', function($animate) {
  * The enter and leave animation occur concurrently.
  *
  * @scope
+ * @priority 400
  *
  * @param {string} ngInclude|src angular expression evaluating to URL. If the source is a string constant,
  *                 make sure you wrap it in quotes, e.g. `src="'myPartialTemplate.html'"`.
@@ -52818,6 +52824,7 @@ var ngStyleDirective = ngDirective(function(scope, element, attr) {
  * </ANY>
  *
  * @scope
+ * @priority 800
  * @param {*} ngSwitch|on expression to match against <tt>ng-switch-when</tt>.
  * @paramDescription
  * On child elements add:
@@ -55929,7 +55936,7 @@ angular.element(document).find('head').prepend('<style type="text/css">@charset 
 });
 require.register("leostera-angular.js/build/angular-touch.js", function(exports, require, module){
 /**
- * @license AngularJS v1.2.0-6558496
+ * @license AngularJS v1.2.0-84ce809
  * (c) 2010-2012 Google, Inc. http://angularjs.org
  * License: MIT
  */
@@ -56877,7 +56884,7 @@ angular
             if($location.search().redirect) {
               $rootScope.$broadcast("ng2auth:routes::redirect", $location.search().redirect);
               $location.path($location.search().redirect);
-              $location.search(false);
+              $location.search({});
             } else if ($location.path() === 'login'){
               $location.path('/');
             }
@@ -57458,7 +57465,9 @@ angular
     , protocols
     , socket
     , map
-    , queue;
+    , queue
+    , retryMax
+    , coolDown;
 
   return {
 
@@ -57470,30 +57479,35 @@ angular
 
       queue = [];
       map = {};
+      retryCount = 0;
 
       if(!url) {
         $rootScope.$broadcast('ng2ws:log', "Using "+window.location.origin+" as websockets server.");
         url = "ws://"+window.location.origin.split('//').pop();
       }
 
+      retryMax = retryMax || 5;
+      coolDown = coolDown || 2000; 
+
       var connect = function () {
+        retryCount = 0;
         socket = new WebSocket(url, protocols);
         $rootScope.$broadcast('ng2ws:socket::connect', socket);
 
         socket.onmessage = function (e) {
           var msg = JSON.parse(e.data);
-          if(msg.data) {
+          if(typeof msg.data === 'string' && msg.data[0] === '{') {
             msg.data = JSON.parse(msg.data);
           }
           $rootScope.$broadcast('ng2ws:socket::message', msg);
           if(msg.label) {
-            map[msg.label].forEach(function (listener) {
-              listener(msg.data);
+            map[msg.label] && map[msg.label].forEach(function (listener) {
+              listener.fn(msg.data);
             });
           } else {
             Object.keys(map).forEach(function (label) {
               map[label].forEach(function (listener) {
-                listener(msg);
+                listener.fn(msg);
               });
             });
           }
@@ -57509,12 +57523,27 @@ angular
         socket.onerror = function (error) {
           $rootScope.$broadcast('ng2ws:socket::error', error);
         };
+
+        socket.onclose = function (e) {
+          $rootScope.$broadcast('ng2ws:socket::close', e);
+          if (!e.wasClean) {
+            if(retryCount >= retryMax) {
+              return $rootScope.$broadcast('ng2ws:socket::retrylimit');
+            }
+            $timeout(function (argument) {
+              $rootScope.$broadcast('ng2ws:socket::reconnect', e);
+              connect();
+              retryCount += 1;
+            }, coolDown);
+          } else {
+            retryCount = 0;
+          }
+        }
       };
 
       var disconnect = function () {
-        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
         socket.close();
-        $rootScope.$broadcast('ng2ws:socket::close', socket);
+        $rootScope.$broadcast('ng2ws:socket::disconnect', socket);
       }
 
       /**
@@ -57535,11 +57564,19 @@ angular
       };
 
       return {
-        open: connect,
-        close: disconnect,
+        open: function () {
+          if(!socket || socket.readyState === 3) {
+            connect();
+          }
+        },
+        close: function () {
+          if(socket && socket.readyState === 1) {
+            disconnect();
+          }
+        },
         send: function (label, data) {
           var msg = JSON.stringify({label: label, data: data});
-          if(socket.readyState === 1) {
+          if(socket && socket.readyState === 1) {
             socket.send(msg);
           } else {
             queue.push(msg);
@@ -57547,12 +57584,27 @@ angular
         },
         on: function (name, callback) {
           if(map[name] === undefined) {
-            map[name] = [];
+            map[name] = []
           }
-          return map[name].push(apply(callback));
+          var something = map[name].filter(function (obj) {
+              return obj.original === callback.toString();
+            });
+          if(something.length > 0) {
+            return;
+          } else {
+            return map[name].push({original: callback.toString(), fn: apply(callback)});
+          }
         }
       };
     }],
+
+    setRetryLimit: function (number) {
+      retryMax = typeof number === 'Number' ? number : 5;
+    },
+
+    setCooldown: function (ms) {
+      coolDown = typeof ms === 'Number' ? ms : 2000;
+    },
 
     setUrl: function (string) {
       url = string;
@@ -75634,7 +75686,7 @@ angular.module('ng2Core')
 
   $locationProvider.html5Mode(true);
 
-  //this is the defualt
+  //this is the defualts
   //OAuth2Provider.setUserService('UserService');
 
   OAuth2FacebookProvider.configure({
@@ -75642,11 +75694,17 @@ angular.module('ng2Core')
   });
 
   ng2wsProvider.setUrl("ws://halo_api.leostera.com:8080");
-
+  // ng2wsProvider.setRetriesNumber(5);
 }])
 
-.run(function (ng2ws) {
-  ng2ws.open();
+.run(function ($rootScope, ng2ws) {
+  $rootScope.$on('ng2auth:login::success', function (user) {
+    ng2ws.open();
+  });
+
+  $rootScope.$on('ng2auth:logout::success', function (user) {
+    ng2ws.close();
+  });
 });
 });
 require.register("ng2-core/index.js", function(exports, require, module){
@@ -75804,28 +75862,40 @@ angular.module('compose')
 }]);
 });
 require.register("compose/views/compose.js", function(exports, require, module){
-module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
+module.exports = '<pre>{{users|json}}</pre>\n<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <!-- <online-users ng-model="to"></online-users> -->\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
 require.register("compose/controllers/compose.js", function(exports, require, module){
 /**
  * @name compose.controllers:compose
  */
 angular.module('compose')
-  .controller('compose',['$scope', 'Message', 'ng2ws'
-  , function ($scope, Message, ws) {
+  .controller('compose',['$scope', '$timeout', 'Message', 'ng2ws', 'UserService'
+  , function ($scope, $timeout, Message, ws, UserService) {
 
     $scope.users = [];
 
-    ws.send('user:online');
-
-    ws.on('user:connect', function (user) {
-      if(_.isEmpty(_.where($scope.users, user))) {
-        $scope.users.push(user);
-      }
+    $scope.$watch('users', function (users) {
+      console.log(users);
     });
 
-    ws.on('user:disconnect', function (user) {
-      $scope.users.splice($scope.users.indexOf(user),1);
+    ws.send('users:online');
+    ws.on('users:online', function (users) {
+      $scope.users = users;
+    });
+
+    ws.on('users:connect', function (user) {
+      UserService.getUser().then(function (me) {
+        if(me._id === user._id) return;
+        if(_.isEmpty(_.where($scope.users, user))) {
+          $scope.users.push(user);
+        }
+      });
+    });
+
+    ws.on('users:disconnect', function (user) {
+      $scope.users = $scope.users.filter(function (u) {
+        return u._id !== user._id;
+      });
     });
 
     $scope.message = {
@@ -75875,7 +75945,7 @@ angular
 }]);
 });
 require.register("compose/views/compose.js", function(exports, require, module){
-module.exports = '<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <online-users ng-model="to"></online-users>\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
+module.exports = '<pre>{{users|json}}</pre>\n<aside class="large-2 large-offset-1 columns">\n  <h5>User List</h5>\n  <input type="search" ng-model="user_search" placeholder="Search users">\n  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>\n  <!-- <online-users ng-model="to"></online-users> -->\n  <ul>\n    <li ng-repeat="user in filtered_users = (users | filter:user_search)">\n      <i class="status" ng-class="{\'online\': user.status}"></i>\n      <span ng-click="message.to.push(user)">{{user.username}}</span>\n    </li>\n  </ul>\n  <h6>{{users.length}} Online users</h6>\n</aside>\n<section class="large-8 left columns">\n  <ng-form name="messageForm" class="row">\n    <section class="large-4 right columns">\n      <label for="">sending to:</label>\n      <span ng-hide="message.to.length > 0">choose someone by clicking on their name in the left-side list</span>\n      <ul>\n        <li ng-repeat="user in message.to">\n          <i class="status" ng-class="{\'online\': user.status}"></i>\n          <span>{{user.username}}</span>\n          <i class="mark" ng-click="message.to.splice(message.to.indexOf(user),1)">×</i>\n        </li>\n      </ul>\n    </section>\n    <section class="large-8 left columns" >\n      <textarea ng-model="message.text" cols="30" placeholder="Type your message here..." required></textarea>\n      <label class="good" ng-show="messageForm.$valid && message.to.length > 0">Good! Now you can continue :)</label>\n      <button ng-show="messageForm.$valid && message.to.length > 0" ng-click="send()">Send</button>\n    </section>\n  </ng-form>\n</section>';
 });
 require.register("inbox/index.js", function(exports, require, module){
 // auto-exports //

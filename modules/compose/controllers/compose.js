@@ -2,25 +2,33 @@
  * @name compose.controllers:compose
  */
 angular.module('compose')
-  .controller('compose',['$scope', 'Message', 'ng2ws'
-  , function ($scope, Message, ws) {
+  .controller('compose',['$scope', '$timeout', 'Message', 'ng2ws', 'UserService'
+  , function ($scope, $timeout, Message, ws, UserService) {
 
     $scope.users = [];
 
-    ws.send('user:list');
+    $scope.$watch('users', function (users) {
+      console.log(users);
+    });
 
-    ws.on('user:list', function (users) {
+    ws.send('users:online');
+    ws.on('users:online', function (users) {
       $scope.users = users;
     });
 
-    ws.on('user:connect', function (user) {
-      if(_.isEmpty(_.where($scope.users, user))) {
-        $scope.users.push(user);
-      }
+    ws.on('users:connect', function (user) {
+      UserService.getUser().then(function (me) {
+        if(me._id === user._id) return;
+        if(_.isEmpty(_.where($scope.users, user))) {
+          $scope.users.push(user);
+        }
+      });
     });
 
-    ws.on('user:disconnect', function (user) {
-      $scope.users.splice($scope.users.indexOf(user),1);
+    ws.on('users:disconnect', function (user) {
+      $scope.users = $scope.users.filter(function (u) {
+        return u._id !== user._id;
+      });
     });
 
     $scope.message = {

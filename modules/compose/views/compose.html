@@ -1,8 +1,9 @@
+<pre>{{users|json}}</pre>
 <aside class="large-2 large-offset-1 columns">
   <h5>User List</h5>
   <input type="search" ng-model="user_search" placeholder="Search users">
   <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>
-  <online-users ng-model="to"></online-users>
+  <!-- <online-users ng-model="to"></online-users> -->
   <ul>
     <li ng-repeat="user in filtered_users = (users | filter:user_search)">
       <i class="status" ng-class="{'online': user.status}"></i>

@@ -7,7 +7,7 @@ angular.module('ng2Core')
 
   $locationProvider.html5Mode(true);
 
-  //this is the defualt
+  //this is the defualts
   //OAuth2Provider.setUserService('UserService');
 
   OAuth2FacebookProvider.configure({
@@ -18,6 +18,12 @@ angular.module('ng2Core')
   // ng2wsProvider.setRetriesNumber(5);
 }])
 
-.run(function (ng2ws) {
-  ng2ws.open();
+.run(function ($rootScope, ng2ws) {
+  $rootScope.$on('ng2auth:login::success', function (user) {
+    ng2ws.open();
+  });
+
+  $rootScope.$on('ng2auth:logout::success', function (user) {
+    ng2ws.close();
+  });
 });
