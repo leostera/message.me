@@ -15,7 +15,7 @@ angular
   $rootScope.$on('ng2ws:socket::connect', function () {
     updateList = setInterval(function () {
       ng2ws.send('users:online');
-    },2000);
+    },5000);
   });
 
   $rootScope.$on('ng2ws:socket::disconnect', function () {
@@ -45,7 +45,7 @@ angular
     update: function () {
       ng2ws.send('users:online');
     },
-    getUsers: function () {
+    list: function () {
       var deferred = $q.defer();
       if(users.length === 0) {
         ng2ws.on('users:online', function (users) {

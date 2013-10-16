@@ -33,6 +33,18 @@ angular.module('mme.shared')
       return this.login(data);
     },
 
+    list: function () {
+      var deferred = $q.defer();
+      $http.get('http://halo_api.leostera.com:8080/users')
+        .success(function (res) {
+          deferred.resolve(res);
+        })
+        .error(function (error) {
+          deferred.reject(error)
+        });
+      return deferred.promise;
+    },
+
     getUser: function () {
       var deferred = $q.defer();
 

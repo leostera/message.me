@@ -1,6 +1,6 @@
 {
-  "name": "compose",
-  "repo": "ng2/compose",
+  "name": "mme.messages",
+  "repo": "ng2/mme.messages",
   "description": "",
   "version": "0.0.1",
   "keywords": [],
@@ -14,11 +14,20 @@
     "index.js",
     "config.js",
     "routes.js",
-    "views/compose.js",
-    "controllers/compose.js",
-    "services/message.js"
+    "controllers/conversations.js",
+    "directives/conversation.js",
+    "directives/conversations-list.js",
+    "directives/users-list.js",
+    "services/conversation.js",
+    "views/conversation.js",
+    "views/conversations-list.js",
+    "views/conversations.js",
+    "views/users-list.js"
   ],
   "styles": [
-    "styles/compose.css"
+    "styles/conversation.css",
+    "styles/conversation-list.css",
+    "styles/users-list.css",
+    "styles/main.css"
   ]
 }

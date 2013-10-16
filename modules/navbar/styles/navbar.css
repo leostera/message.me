@@ -9,13 +9,13 @@ nav > section.top-bar-section > ul > li > a:not(.button) {
   background-color: #305AAB;
 }
 nav > section.top-bar-section > ul > li > a:not(.button):hover {
-  background-color: #4974C4;
+  background-color: #4974c4;
 }
 nav > section.top-bar-section > ul.menu {
   background-color: #598def;
 }
 nav > section.top-bar-section > ul > li > a.active {
-  background-color: #4974C4;
+  background-color: #4974c4;
 }
 /**
  * Animations
