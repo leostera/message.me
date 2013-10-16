@@ -10,9 +10,13 @@ angular
 
   var users = [];
 
-  ng2ws.send('users:online');
+  var updateList = setInterval(function () {
+    ng2ws.send('users:online');
+  },2000);
+
   ng2ws.on('users:online', function (onlineUsers) {
     users = onlineUsers;
+    $rootScope.$broadcast('onlineUsers::list', users);
   });
 
   ng2ws.on('users:connect', function (user) {
