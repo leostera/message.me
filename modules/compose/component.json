@@ -16,7 +16,8 @@
     "routes.js",
     "views/compose.js",
     "controllers/compose.js",
-    "services/message.js"
+    "services/message.js",
+    "services/online-users.js"
   ],
   "styles": [
     "styles/compose.css"
