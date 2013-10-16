@@ -5,5 +5,8 @@ angular.module('mme.messages')
       controller: 'compose',
       template: require('./views/compose'),
       private: true
+    })
+    .when('/main', {
+      redirectTo: '/'
     });
 }]);

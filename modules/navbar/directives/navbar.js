@@ -21,8 +21,7 @@ angular.module('mme.navbar')
           scope.menu = []
           scope.user = typeof data === 'string' ? null : data;
           if(scope.user && scope.user.username) {
-            scope.menu = [
-              {name: 'main', url: '/'},'about']
+            scope.menu = ['main','about']
             scope.user.picture = 'https://graph.facebook.com/'+data.username+'/picture';
           } else {
             $location.path('/');

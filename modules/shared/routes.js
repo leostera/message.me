@@ -4,5 +4,8 @@ angular.module('mme.shared')
     .when('/login', {
       controller: 'login',
       template: require('./views/login')
+    })
+    .otherwise({
+      redirectTo: '/'
     });
 }]);

@@ -3,7 +3,7 @@ angular.module('mme.shared')
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
   DebugEventsProvider.setVerbosityLevel('vv');
-  DebugEventsProvider.setFilter('^ng2auth');
+  DebugEventsProvider.setFilter('^ng2ws');
 
   $locationProvider.html5Mode(true);
 
@@ -21,6 +21,9 @@ angular.module('mme.shared')
 .run(['$rootScope', '$location','$timeout', 'ng2ws'
 , function ($rootScope, $location, $timeout, ng2ws) {
   $rootScope.$on('ng2auth:login::success', function (user) {
+    $timeout(function () {
+      $location.path('/').replace();
+    });
     ng2ws.open();
   });
 
