@@ -1,10 +1,9 @@
-<aside class="large-2 large-offset-1 columns">
+<aside class="large-2 large-offset-1 columns" ng-init="user_search={}">
   <h5>User List</h5>
-  <input type="search" ng-model="user_search" placeholder="Search users">
-  <h6 ng-show="filtered_users && user_search">{{filtered_users.length}} users found</h6>
-  <!-- <online-users ng-model="to"></online-users> -->
+  <input type="search" ng-model="user_search.name" placeholder="Search users">
+  <h6 ng-show="filtered_users && user_search.name">{{filtered_users.length}} users found</h6>
   <ul>
-    <li ng-repeat="user in filtered_users = (users | filter:user_search)">
+    <li ng-repeat="user in filtered_users = (users | filter:user_search.name)">
       <i class="status" ng-class="{'online': user.status}"></i>
       <span ng-click="message.to.push(user)">{{user.username}}</span>
     </li>
