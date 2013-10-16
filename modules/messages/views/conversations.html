@@ -8,7 +8,9 @@
   </header>
 
   <conversations-list
-    ng-show="$parent.currentList == 'conversations'"selectedConversation='selectedConversation'>
+    ng-show="$parent.currentList == 'conversations'"
+    conversations='conversations'
+    selected-conversation='selectedConversation'>
   </conversations-list>
 
   <users-list
@@ -21,7 +23,9 @@
 
 </aside>
 <section class="large-7 left columns">
-  <conversation ng-model="selectedConversation"></conversation>
+  <conversation
+    selected-conversations='selectedConversation'>
+  </conversation>
   <textarea ng-show="selectedUsers.length>0 || selectedConversation" ng-model="message" placeholder="Type your message here..."></textarea>
   <button class="button" ng-show="selectedUsers.length>0 && message" ng-click="send()">Send</button>
 </section>

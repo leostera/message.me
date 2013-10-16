@@ -18,6 +18,10 @@ angular.module('mme.messages')
       $scope.me = me;
     });
 
+    $scope.$watch('conversations', function (conversations) {
+      console.log(conversations);
+    }, true);
+
     $scope.$watch('users', function (users) {
       // console.log(users);
     }, true)
@@ -42,6 +46,7 @@ angular.module('mme.messages')
             $scope.selectedConversation = c;
           }
         });
+        $scope.currentList='conversations';
       }
 
       message = {
