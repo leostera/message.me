@@ -7,13 +7,13 @@ angular.module('compose')
 
     $scope.users = [];
 
-    $scope.$watch('users', function (users) {
-      console.log(users);
-    });
-
     ws.send('users:online');
     ws.on('users:online', function (users) {
-      $scope.users = users;
+      UserService.getUser().then(function (me) {
+          $scope.users = users.filter(function (user) {
+            return user._id !== me._id;
+          });
+      });
     });
 
     ws.on('users:connect', function (user) {
