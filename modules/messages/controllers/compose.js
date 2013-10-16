@@ -37,6 +37,15 @@ angular.module('mme.messages')
       to: []
     };
 
+    $scope.addRecipient = function (recipient) {
+      console.log(recipient, $scope.message.to);
+      if(_.find($scope.message.to, {_id: recipient._id})) {
+        return;
+      } else {
+        $scope.message.to.push(recipient);
+      }
+    }
+
     $scope.send = function () {
       message = angular.copy($scope.message);
       message.to = message.to.map(function (user) {
