@@ -1,0 +1,27 @@
+<aside class="large-3 large-offset-1 columns">
+  <header>
+    <!-- <ul ng-init="currentList='conversations'"> -->
+    <ul ng-init="currentList='people'">
+      <li ng-class="{'active': currentList=='conversations'}" ng-click="currentList='conversations'">Conversations</li>
+      <li ng-class="{'active': currentList=='people'}" ng-click="currentList='people'">People</li>
+    </ul>
+  </header>
+
+  <conversations-list
+    ng-show="$parent.currentList == 'conversations'"selectedConversation='selectedConversation'>
+  </conversations-list>
+
+  <users-list
+    ng-show="$parent.currentList == 'people'"
+    me='me'
+    users='users'
+    selected-users='selectedUsers'
+    >
+  </users-list>
+
+</aside>
+<section class="large-7 left columns">
+  <conversation ng-model="selectedConversation"></conversation>
+  <textarea ng-show="selectedUsers.length>0 || selectedConversation" ng-model="message" placeholder="Type your message here..."></textarea>
+  <button class="button" ng-show="selectedUsers.length>0 && message" ng-click="send()">Send</button>
+</section>

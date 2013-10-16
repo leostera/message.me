@@ -1,0 +1,22 @@
+<section ng-hide="conversation">
+<h3 >Here you'll see a conversation.</h3>
+<p ng-hide="conversatoin">But first you need to start one or to continue an existing one.</p>
+<h4>Starting a new one.</h4>
+<p>Click on the People tab, then click on someone and you'll see what to do.</p>
+<h4>Continuing an existing one</h4>
+<p>Click on the Conversations tab, then click on any of the conversations listed there and you'll see what to do.</p>
+</section>
+<section ng-show="conversation">
+  <header>
+    <span>Talking to</span>
+    <span>
+      <i class="">Status</i>
+      Username
+    </span>
+  </header>
+  <article ng-repeat="message in conversation.messages" ng-class="{'me': message.from._id == me._id}">
+    <img ng-src="//graph.facebook.com/{{message.from.username}}/picture" alt="">
+    <h4>{message.from.username}}</h4>
+    <p>{message.text}}</p>
+  </article>
+</section>

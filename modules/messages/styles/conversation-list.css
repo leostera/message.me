@@ -1,0 +1,10 @@
+conversations-list {
+  margin-top: 50px;
+  display: block;
+  font-size: 0.8em;
+}
+conversations-list > span {
+  margin: 20px 0px;
+  width: 100%;
+  display: block;
+}

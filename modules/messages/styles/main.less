@@ -1,0 +1,76 @@
+@blue: #305AAB;
+@lightblue: #4974C4;
+
+ng-view input {
+  font-weight: normal !important;
+}
+
+ng-view > section.large-7, ng-view > aside {
+  background-color: lighten(@lightblue,40%);
+  height: 700px;
+  max-height: 700px;
+  margin: 0 5px;
+}
+
+ng-view > aside {
+
+  header {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    display: block;
+    margin-bottom: 40px;
+  }
+
+  header > ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+    display: block;
+    li {
+      display: block;
+      float: left;
+      width: 50%;
+      font-size: 0.7em;
+      color: whitesmoke;
+      background-color: @blue;
+
+      &:hover, &.active {
+        background-color: @lightblue;
+      }
+    }
+  }
+}
+
+ng-view > section.large-7 {
+  textarea {
+    position: absolute;
+    width: 75%;
+    bottom: 0;
+    height: 100px;
+    font-weight: normal !important;
+    resize: none !important;
+  }
+
+  button.button {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 20px;
+    width: 106px;
+    margin-bottom: 40px;
+    font-weight: normal !important;
+    background-color: @blue;
+
+    -webkit-transition: all .5s ease;
+    -moz-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    -o-transition: all .5s ease;
+    transition: all .5s ease;
+
+    &:hover {
+      background-color: @lightblue;
+    }
+  }
+}

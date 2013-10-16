@@ -1,0 +1,41 @@
+users-list {
+  margin-top: 50px;
+  display: block;
+  font-size: 0.8em;
+}
+users-list > ul {
+  list-style: none;
+}
+users-list > ul li {
+  float: left;
+  display: block;
+  background: transparent;
+}
+users-list > ul li > img.marked {
+  opacity: 1 !important;
+}
+users-list > ul li > img.marked:after {
+  top: 0;
+  left: 0;
+  position: relative;
+  content: '✓';
+  font-size: 2em;
+  color: green;
+}
+users-list > ul li > img {
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+  opacity: 0.7;
+}
+users-list > ul li > img.offline {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+}
+users-list > ul li > img:hover {
+  opacity: 0.9;
+}
+users-list > ul li > img.match {
+  opacity: 1;
+}
