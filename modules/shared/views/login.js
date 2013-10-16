@@ -1,0 +1,1 @@
+module.exports = '<section class="large-6 large-offset-3 columns">\n  <h1>Hi,\n  <h3>Please do everyone else a favor and login.</h3>\n  <button ng-click="login()" class="large centered button">\n    Login with Facebook\n  </button>\n\n</section>';

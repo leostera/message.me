@@ -1,0 +1,27 @@
+{
+  "name": "shared",
+  "repo": "messageme/shared",
+  "description": "",
+  "version": "0.0.1",
+  "keywords": [],
+  "dependencies": {
+    "ng2/ws": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "config.js",
+    "routes.js",
+    "services/user-service.js",
+    "services/online-users.js",
+    "controllers/login.js",
+    "views/login.js"
+  ],
+  "styles": [
+    "styles/main.css",
+    "styles/fonts.css",
+    "styles/login.css"
+  ]
+}
