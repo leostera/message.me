@@ -51,86 +51,48 @@ angular.module('mme.messages')
 
     $scope.send = function () {
       var message = {
-        text: $scope['message'],
-        to: $scope['selectedUsers'].map(function (user) {
+        text: $scope['message']
+      };
+      $scope.message = null;
+      $scope.selectedConversation.messages.push(message);
+      ConversationService.sendMessage($scope.selectedConversation._id, message)
+        .then(function (m) {
+          // do something with the message
+        });
+    }
+
+    $scope.start = function () {
+      var to = $scope.selectedUsers.map(function (user) {
          return user._id;
-        })
+        });
+
+      var message = {
+        text: $scope['message']
       };
 
-      $scope.message = null;
-      if(!$scope.selectedConversation) {
-        // new message or conversation!
-        //
-        if($scope.selectedUsers.length < 1) {
-          return;
-        }
-
-        if ( $scope.selectedUsers.length === 1) {
-          var exists = false;
-          $scope.conversations.forEach(function (c) {
-            // add it to the old convo it it exists
-            if(c.to._id === $scope.selectedUsers[0]._id) {
-              $scope.currentList = 'conversations';
-              $scope.selectedConversation = c;
-              c.messages.push({
-                text: message.text,
-                from: $scope.me,
-                to: c.to
-              });
+      ConversationService.start({
+        to: to
+      }).then(function (conversations) {
+        $scope.message = null;
+        conversations.forEach(function (c) {
+          to.forEach(function (t) {
+            if(t === c.to) {
+              c.to = $scope.selectedUsers.filter(function (u) {
+                return c.to === u._id;
+              })[0];
+              c.messages.push(message);
             }
           });
-          if(!exists) {
-            var c = {
-              messages: [{
-                text: message.text,
-                to: $scope.selectedUsers[0],
-                from: $scope.me
-              }],
-              to: $scope.selectedUsers[0],
-              from: $scope.me,
-            };
-            $scope.conversations.push(c);
-            $scope.selectedConversation = c;
-            $scope.selectedConversation.selected = true;
-            $scope.currentList = 'conversations'
-          }
-        } else if($scope.selectedUsers.length > 1) {
-          // it means we're sending a new mass message
-          message.newBlast = true;
-          $scope.selectedUsers.forEach(function (u) {
-            var c = {
-              messages: [{
-                text: message.text,
-                to: u,
-                from: $scope.me
-              }],
-              to: u,
-              from: $scope.me,
-            };
-            $scope.conversations.push(c);
-            if(!$scope.selectedConversation) {
-              $scope.selectedConversation = c;
-              $scope.selectedConversation.selected = true;
-            }
-          });
-          $scope.currentList = 'conversations';
-        }
-      } else {
-        $scope.selectedConversation.messages.push({
-          text: message.text,
-          from: $scope.me,
-          to: $scope.selectedConversation.to
         });
-      }
-
-      $scope.sending = true;
-      ConversationService.sendMessage(message)
-        .then(function (res) {
-          console.log("Message:success",res);
-          $scope.sending = false;
-        }, function (error) {
-          console.log("Message:error",error);
-          $scope.sending = false;
+        $scope.conversations = conversations;
+        $scope.currentList = 'conversations';
+        conversations.forEach(function (c) {
+          console.lo
+          ConversationService.sendMessage(c._id, message)
+            .then(function (m) {
+              // do something with the message
+            });
         });
+      });
     };
   }]);

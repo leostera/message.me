@@ -29,6 +29,8 @@ conversation > section.row section.left article section.me {
 conversation > section.row section.left article section.large-9 {
   margin: 0;
   padding: 0 10px;
+  height: 450px !important;
+  overflow-y: scroll;
 }
 conversation > section.row section.left article section > h6 {
   font-size: 0.5em;
