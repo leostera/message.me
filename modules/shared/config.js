@@ -2,8 +2,8 @@ angular.module('mme.shared')
 .config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider', 'ng2wsProvider'
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
-  DebugEventsProvider.setVerbosityLevel('vv');
-  DebugEventsProvider.setFilter('^ng2ws');
+  // DebugEventsProvider.setVerbosityLevel('');
+  // DebugEventsProvider.setFilter('^ng2ws');
 
   $locationProvider.html5Mode(true);
 

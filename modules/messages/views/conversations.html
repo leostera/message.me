@@ -2,8 +2,8 @@
   <header>
     <!-- <ul ng-init="currentList='conversations'"> -->
     <ul ng-init="currentList='people'">
-      <li ng-class="{'active': currentList=='conversations'}" ng-click="currentList='conversations'">Conversations</li>
-      <li ng-class="{'active': currentList=='people'}" ng-click="currentList='people'">People</li>
+      <li ng-class="{'active': currentList=='conversations'}" ng-click="currentList='conversations'; selectedUsers=[]">Conversations</li>
+      <li ng-class="{'active': currentList=='people'}" ng-click="currentList='people'; selectedConversation=null">People</li>
     </ul>
   </header>
 
@@ -24,8 +24,8 @@
 </aside>
 <section class="large-7 left columns">
   <conversation
-    selected-conversations='selectedConversation'>
+    selected-conversation='selectedConversation'>
   </conversation>
   <textarea ng-show="selectedUsers.length>0 || selectedConversation" ng-model="message" placeholder="Type your message here..."></textarea>
-  <button class="button" ng-show="selectedUsers.length>0 && message" ng-click="send()">Send</button>
+  <button class="button" ng-show="(selectedUsers.length>0 || selectedConversation) && message" ng-click="send()">Send</button>
 </section>

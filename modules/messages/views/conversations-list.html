@@ -1,12 +1,18 @@
-<span ng-hide="conversations.length">No conversations yet!</span>
-<p>Click on People and pick someone to start talking to :)</p>
+<section ng-hide="conversations.length">
+  <span >No conversations yet!</span>
+  <p>Click on People and pick someone to start talking to :)</p>
+</section>
+<input type="search" ng-model="conversation_search" placeholder="Search by name" ng-show="conversations.length">
 <ul ng-show="conversations.length">
   <li
     ng-class="{'selected': selectedConversation==conversation}"
-    ng-click="selectedConversation = conversation"
-    ng-repeat="conversation in conversations | orderBy:newMessageCount">
-    <img ng-src="//graph.facebook.com/{{conversation.to.username}}/picture" alt="">
-    <span>{{conversation.to.username}}</span>
-    <p>{{conversation.messages.pop().substr(120)+'...'}}</p>
+    ng-click="select(conversation)"
+    ng-repeat="conversation in filteredConversations = ( conversations | filter:conversation_search | orderBy:newMessageCount)">
+    <img ng-src="//graph.facebook.com/{{conversation.to.username}}/picture"
+      ng-class="{'offline': !conversation.to.status}" alt="">
+    <section>
+      <span>{{conversation.to.username}}</span>
+      <p>{{conversation.messages[conversation.messages.length-1].text.substr(0,30)+'...'}}</p>
+    </section>
   </li>
 </ul>

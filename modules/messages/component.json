@@ -22,7 +22,8 @@
     "views/conversation.js",
     "views/conversations-list.js",
     "views/conversations.js",
-    "views/users-list.js"
+    "views/users-list.js",
+    "filters/new-message-count.js"
   ],
   "styles": [
     "styles/conversation.css",

@@ -29,6 +29,7 @@ ng-view > aside header > ul li {
   font-size: 0.7em;
   color: whitesmoke;
   background-color: #305aab;
+  cursor: pointer;
 }
 ng-view > aside header > ul li:hover,
 ng-view > aside header > ul li.active {

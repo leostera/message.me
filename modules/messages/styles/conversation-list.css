@@ -11,9 +11,45 @@ conversations-list > span {
 conversations-list > ul {
   list-style: none;
 }
-conversations-list > ul li span {
+conversations-list > ul li {
+  display: block;
+  width: 100%;
+  float: left;
+  padding: 10px;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
+  border-bottom: 1 solid rgba(0, 0, 0, 0.2);
+}
+conversations-list > ul li:last-child {
+  border-bottom: none;
+}
+conversations-list > ul li:hover {
+  background-color: rgba(171, 183, 243, 0.7);
+}
+conversations-list > ul li.selected {
+  background-color: rgba(171, 183, 243, 0.7);
+}
+conversations-list > ul li img {
+  float: left;
+  display: block;
+}
+conversations-list > ul li section > span {
   position: absolute;
-  margin: 0 10px;
+  margin: 0 20px;
+  line-height: 1;
   padding: 0;
   font-size: 0.9em;
+}
+conversations-list > ul li section > p {
+  font-size: 0.6em;
+  font-weight: normal !important;
+  display: block;
+  padding: 0;
+  float: left;
+  margin: 0;
+  margin-top: 22px;
+  margin-left: 20px;
 }

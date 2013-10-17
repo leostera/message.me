@@ -3,3 +3,50 @@ conversation {
   display: block;
   font-size: 0.8em;
 }
+
+conversation > section.row {
+  margin: 0 auto !important;
+  width: 100% !important;
+
+  header {
+    display: block;
+    float: center;
+    font-size: 0.8em;
+    margin-top: 8px;
+  }
+
+  section.left {
+    padding: 10px;
+    margin: 10px;
+  
+    article {
+      margin: 0 auto;
+      
+      section {
+        text-align: left;
+
+        &.me {
+          text-align: right;
+        }
+
+        &.large-9 {
+          margin: 0;
+          padding: 0 10px;
+        }
+      }
+
+
+      section > h6 {
+        font-size: 0.5em;
+        line-height: 1;
+        margin: 0 !important;
+      }
+
+      section > p {
+        font-size: 0.5em;
+        font-weight: normal !important;
+        line-height: 1.3;
+      }
+    }
+  }
+}

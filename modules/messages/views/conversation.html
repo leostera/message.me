@@ -1,22 +1,25 @@
-<section ng-hide="conversation">
+<section ng-hide="selectedConversation">
 <h3 >Here you'll see a conversation.</h3>
-<p ng-hide="conversatoin">But first you need to start one or to continue an existing one.</p>
+<p>But first you need to start one or to continue an existing one.</p>
 <h4>Starting a new one.</h4>
 <p>Click on the People tab, then click on someone and you'll see what to do.</p>
 <h4>Continuing an existing one</h4>
 <p>Click on the Conversations tab, then click on any of the conversations listed there and you'll see what to do.</p>
 </section>
-<section ng-show="conversation">
-  <header>
-    <span>Talking to</span>
-    <span>
-      <i class="">Status</i>
-      Username
-    </span>
+<section ng-show="selectedConversation" class="row" ng-init="message_search=null">
+  <input type="search" ng-model="message_search" placeholder="Search for messages">
+  <header class="large-2 right">
+    <img ng-src="//graph.facebook.com/{{selectedConversation.to.username}}/picture?type=large"
+     ng-class="{'offline': !selectedConversation.to.status}" alt="" >
+    <span>{{selectedConversation.to.username}}</span>
   </header>
-  <article ng-repeat="message in conversation.messages" ng-class="{'me': message.from._id == me._id}">
-    <img ng-src="//graph.facebook.com/{{message.from.username}}/picture" alt="">
-    <h4>{message.from.username}}</h4>
-    <p>{message.text}}</p>
-  </article>
+  <section class="large-9 left">
+    <article ng-repeat="message in (selectedConversation.messages | filter:message_search)" ng-class="{'me': message.from._id == me._id}" class="row">
+      <img class="large-1 left" ng-src="//graph.facebook.com/{{message.from.username}}/picture" alt="">
+      <section class="large-9 left">
+        <h6>{{message.from.username}}</h6>
+        <p>{{message.text}}</p>
+      </section>
+    </article>
+  </section>
 </section>

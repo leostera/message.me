@@ -19,14 +19,14 @@ angular
       return deferred.promise;
     },
     sendMessage: function (message) {
-       var deferred = $q.defer();
-       $http.post('http://halo_api.leostera.com:8080/conversations', users)
+      var deferred = $q.defer();
+      $http.post('http://halo_api.leostera.com:8080/conversations', message)
         .success(function (res) {
           deferred.resolve(res);
         }, function (error) {
           deferred.reject(error);
         });
-       return deferred.promise;
+      return deferred.promise;
     }
   }
 }]);

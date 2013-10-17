@@ -1,3 +1,9 @@
+img.offline {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+}
 users-list {
   margin-top: 50px;
   display: block;
@@ -26,12 +32,6 @@ users-list > ul li > img {
   cursor: pointer;
   transition: opacity 0.2s ease;
   opacity: 0.7;
-}
-users-list > ul li > img.offline {
-  filter: grayscale(100%);
-  -webkit-filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
 }
 users-list > ul li > img:hover {
   opacity: 0.9;

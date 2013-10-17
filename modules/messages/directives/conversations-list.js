@@ -18,9 +18,21 @@ angular.module('mme.messages')
         selectedConversation: '='
       },
       link: function(scope, element, attr) {
-        ConversationService.list().then(function (list) {
-          scope.conversations = list;
-        });
+        // ConversationService.list().then(function (list) {
+        //   scope.conversations = list;
+        // });
+
+        scope.select = function (conversation) {
+          var index = scope.conversations.indexOf(conversation);
+          var conversation = scope.conversations[index];
+          if(!conversation.selected) {
+            scope.conversations.forEach(function (c) {
+              c.selected = false;
+            });
+            scope.selectedConversation = conversation;
+          }
+          conversation.selected = true;
+        };
       }
     };
   }

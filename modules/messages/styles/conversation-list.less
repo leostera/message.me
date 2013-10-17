@@ -13,14 +13,51 @@ conversations-list > span {
 conversations-list > ul {
   list-style: none;
   li {
-    span {
+    display: block;
+    width: 100%;
+    float: left;
+    padding: 10px;
+
+    -webkit-transition: all 0.2s ease;
+    -moz-transition: all 0.2s ease;
+    -ms-transition: all 0.2s ease;
+    -o-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+
+    border-bottom: 1 solid rgba(0,0,0,0.2);
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba(171, 183, 243, 0.7);
+    }
+
+    &.selected {
+      background-color: rgba(171, 183, 243, 0.7);
+    }
+
+    img {
+      float: left;
+      display: block;
+    }
+
+    section > span {
       position: absolute;
-      margin: 0 10px;
+      margin: 0 20px;
+      line-height: 1;
       padding: 0;
       font-size: 0.9em;
     }
-    p {
-      
+    section > p {
+      font-size: 0.6em;
+      font-weight: normal !important;
+      display: block;
+      padding: 0;
+      float: left;
+      margin: 0;
+      margin-top: 22px;
+      margin-left: 20px;
     }
   }
 }

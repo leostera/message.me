@@ -1,5 +1,12 @@
 @blue: #305AAB;
 
+img.offline {
+  filter: grayscale(100%);
+  -webkit-filter: grayscale(100%);
+  -moz-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+}
+
 users-list {
   margin-top: 50px;
   display: block;
@@ -31,12 +38,6 @@ users-list > ul {
     transition: opacity 0.2s ease;
     opacity: 0.7;
 
-    &.offline {
-      filter: grayscale(100%);
-      -webkit-filter: grayscale(100%);
-      -moz-filter: grayscale(100%);
-      -o-filter: grayscale(100%);
-    }
     &:hover {
       opacity: 0.9;
     }

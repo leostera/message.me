@@ -34,6 +34,7 @@ angular.module('mme.messages')
 
         UserService.list().then(function (users) {
           scope.users = users.filter(function (u) {
+            u.status = false;
             return u._id !== scope.me._id;
           });
           OnlineUsersService.list().then(function (users) {
@@ -43,8 +44,6 @@ angular.module('mme.messages')
               });
               if(f.length === 1) {
                 u1.status = true;
-              } else {
-                u1.status = false;
               }
             });
           });
