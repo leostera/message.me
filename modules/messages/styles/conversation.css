@@ -19,12 +19,16 @@ conversation > section.row section.left {
 }
 conversation > section.row section.left article {
   margin: 0 auto;
+  height: 48px;
+  float: left;
+  display: block;
+  width: 100%;
+}
+conversation > section.row section.left article.me {
+  text-align: right !important;
 }
 conversation > section.row section.left article section {
   text-align: left;
-}
-conversation > section.row section.left article section.me {
-  text-align: right;
 }
 conversation > section.row section.left article section.large-9 {
   margin: 0;
@@ -40,5 +44,5 @@ conversation > section.row section.left article section > h6 {
 conversation > section.row section.left article section > p {
   font-size: 0.5em;
   font-weight: normal !important;
-  line-height: 1.3;
+  line-height: 0.7;
 }
