@@ -54,7 +54,11 @@ angular.module('mme.messages')
         text: $scope['message']
       };
       $scope.message = null;
-      $scope.selectedConversation.messages.push(message);
+      $scope.selectedConversation.messages.unshift({
+        text: message.text,
+        from: $scope['me'],
+        to:   $scope.selectedConversation.to
+      });
       ConversationService.sendMessage($scope.selectedConversation._id, message)
         .then(function (m) {
           // do something with the message
@@ -80,11 +84,15 @@ angular.module('mme.messages')
               c.to = $scope.selectedUsers.filter(function (u) {
                 return c.to === u._id;
               })[0];
-              c.messages.push(message);
+              c.messages.unshift({
+                text: message.text,
+                from: $scope['me'],
+                to:   c.to
+              });
             }
           });
         });
-        $scope.conversations = conversations;
+        $scope.conversations = $scope.conversations.concat(conversations).reverse();
         $scope.currentList = 'conversations';
         conversations.forEach(function (c) {
           console.lo

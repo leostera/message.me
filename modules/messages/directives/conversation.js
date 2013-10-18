@@ -12,7 +12,8 @@ angular.module('mme.messages')
       restrict: 'E',
       template: require('../views/conversation'),
       scope: {
-        selectedConversation:'='
+        selectedConversation:'=',
+        me:'='
       },
       link: function(scope, element, attr, ngModel) {
       }
