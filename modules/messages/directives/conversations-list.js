@@ -6,8 +6,8 @@
  */
 angular.module('mme.messages')
   .directive('conversationsList',
-    ['ConversationService'
-  , function (ConversationService) {
+    ['ConversationService', 'ng2ws'
+  , function (ConversationService, ws) {
 
     return {
       priority: 0,
@@ -20,6 +20,30 @@ angular.module('mme.messages')
         selectedConversation: '='
       },
       link: function(scope, element, attr) {
+        ws.on('message:new', function (data) {
+          var messages = data.map(function (d) {
+            return JSON.parse(d.Body);
+          });
+          console.log("messages list", messages);
+          messages.forEach(function (message) {
+            scope.conversations.forEach(function (conversation) {
+              if(message.cid !== conversation._id) return;
+              if(conversation.to._id === message.to) {
+                message.to = conversation.to;
+              } else { //if(conversation.to._id === message.from) {
+                message.from = conversation.to;
+              }
+              if(conversation.from._id === message.to) {
+                message.to = conversation.from;
+              } else { //(conversation.fromessage._id === message.from) {
+                message.from = conversation.from;
+              }
+              console.log("About to unshift", message);
+              conversation.messages.unshift(message);
+            });
+          });
+        });
+
         ConversationService.list().then(function (conversations) {
           scope.conversations = scope.conversations.concat(conversations).reverse();
           scope.conversations.forEach(function (c) {
