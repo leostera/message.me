@@ -2,8 +2,8 @@ angular.module('mme.shared')
 .config(['$locationProvider', 'OAuth2FacebookProvider', 'DebugEventsProvider', 'ng2wsProvider'
   , function ($locationProvider, OAuth2FacebookProvider, DebugEventsProvider, ng2wsProvider) {
 
-  // DebugEventsProvider.setVerbosityLevel('');
-  // DebugEventsProvider.setFilter('^ng2ws');
+  DebugEventsProvider.setVerbosityLevel('vv');
+  DebugEventsProvider.setFilter('^ng2ws');
 
   $locationProvider.html5Mode(true);
 
@@ -11,7 +11,8 @@ angular.module('mme.shared')
   //OAuth2Provider.setUserService('UserService');
 
   OAuth2FacebookProvider.configure({
-    client_id: '435065866602908'
+    client_id: '435065866602908',
+    scopes:'email,read_friendlists,user_friends'
   });
 
   ng2wsProvider.setUrl("ws://halo_api.leostera.com:8080");
