@@ -5,7 +5,6 @@ angular.module('mme.messages')
   .controller('conversations',['$scope', 'OnlineUsersService', 'UserService', 'ConversationService'
   , function ($scope, OnlineUsersService, UserService, ConversationService) {
 
-    OnlineUsersService.update();
 
     $scope.me = false;
     $scope.users = [];
@@ -14,11 +13,17 @@ angular.module('mme.messages')
     $scope.selectedUsers = [];
     $scope.selectedConversation = false;
 
+    OnlineUsersService.update();
+
     UserService.getUser().then(function (me) {
       $scope.me = {
         _id: me._id,
         username: me.username
       };
+    });
+
+    ConversationService.list().then(function (conversations) {
+      $scope.conversations = $scope.conversations.concat(conversations).reverse();
     });
 
     $scope.$watch('currentList', function (cl) {
@@ -41,7 +46,7 @@ angular.module('mme.messages')
 
     $scope.$watch('users', function (users) {
       // console.log(users);
-    }, true)
+    }, true);
 
     $scope.$watch('selectedUsers', function (users) {
       if(users.length === 0) {
