@@ -8,9 +8,9 @@
 <section ng-show="selectedConversation" class="row" ng-init="message_search=null">
   <input type="search" ng-model="message_search" placeholder="Search for messages">
   <header class="large-2 right">
-    <img ng-src="//graph.facebook.com/{{selectedConversation.to.username}}/picture?type=large"
-     ng-class="{'offline': !selectedConversation.to.status}" alt="" >
-    <span>{{selectedConversation.to.username}}</span>
+    <img ng-src="//graph.facebook.com/{{selectedConversation.to._id===me._id && selectedConversation.from.username || selectedConversation.to.username}}/picture?type=large"
+      ng-class="{'offline': !(selectedConversation.to._id===me._id&&selectedConversation.from.status||selectedConversation.to.status)}" alt="">
+    <span>{{selectedConversation.to._id===me._id && selectedConversation.from.username || selectedConversation.to.username}}</span>
   </header>
   <section class="large-9 left">
     <article ng-repeat="message in (selectedConversation.messages | filter:message_search)" ng-class="{'me': selectedConversation.from._id == me._id}" class="row">

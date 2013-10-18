@@ -14,6 +14,7 @@ angular.module('mme.messages')
       restrict: 'E',
       template: require('../views/conversations-list'),
       scope: {
+        me: '=',
         conversations: '=',
         selectedConversation: '='
       },

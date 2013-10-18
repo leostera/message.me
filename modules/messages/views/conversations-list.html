@@ -8,11 +8,11 @@
     ng-class="{'selected': selectedConversation==conversation}"
     ng-click="select(conversation)"
     ng-repeat="conversation in filteredConversations = ( conversations | filter:conversation_search | orderBy:newMessageCount)">
-    <img ng-src="//graph.facebook.com/{{conversation.to.username}}/picture"
-      ng-class="{'offline': !conversation.to.status}" alt="">
+    <img ng-src="//graph.facebook.com/{{conversation.to._id===me._id && conversation.from.username || conversation.to.username}}/picture"
+      ng-class="{'offline': !(conversation.to._id===me._id&&conversation.from.status||conversation.to.status)}" alt="">
     <section>
-      <span>{{conversation.to.username}}</span>
-      <p>{{conversation.messages[conversation.messages.length-1].text.substr(0,30)+'...'}}</p>
+      <span>{{conversation.to._id===me._id && conversation.from.username || conversation.to.username}}</span>
+      <p>{{conversation.messages[0].text.substr(0,30)+'...'}}</p>
     </section>
   </li>
 </ul>

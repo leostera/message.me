@@ -26,14 +26,23 @@ angular.module('mme.messages')
     ConversationService.list().then(function (conversations) {
       $scope.conversations = $scope.conversations.concat(conversations).reverse();
       $scope.conversations.forEach(function (c) {
+        c.messages = c.messages.reverse();
         c.messages.forEach(function (m) {
           if(c.to._id === m.to) {
             m.to = c.to;
+          } else { //if(c.to._id === m.from) {
+            m.from = c.to;
           }
-          if(c.from._id === m.from) {
+
+          if(c.from._id === m.to) {
+            m.to = c.from;
+          } else { //(c.from._id === m.from) {
             m.from = c.from;
           }
-        })
+
+          console.log(m);
+        });
+
       })
     });
 
@@ -72,8 +81,7 @@ angular.module('mme.messages')
       $scope.message = null;
       $scope.selectedConversation.messages.unshift({
         text: message.text,
-        from: $scope['me'],
-        to:   $scope.selectedConversation.to
+        from: $scope.selectedConversation.to._id === $scope.me._id && $scope.me || $scope.selectedConversation.from,
       });
       ConversationService.sendMessage($scope.selectedConversation._id, message)
         .then(function (m) {
