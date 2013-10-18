@@ -14,14 +14,11 @@ angular.module('mme.navbar')
       restrict: 'E',
       replace: true,
       link: function(scope, element, attr) {
-        scope.menu = []
         scope.select=false;
 
         var handleUserData = function (event, data) {
-          scope.menu = []
           scope.user = typeof data === 'string' ? null : data;
           if(scope.user && scope.user.username) {
-            scope.menu = ['main','about']
             scope.user.picture = 'https://graph.facebook.com/'+data.username+'/picture';
           } else {
             $location.path('/');

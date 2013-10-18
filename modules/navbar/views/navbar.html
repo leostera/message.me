@@ -12,15 +12,6 @@
     </ul>
 
   <section class="top-bar-section">
-      <!-- Left Nav Section -->
-      <ul class="left menu">
-        <li ng-repeat="item in menu" class="fade">
-          <a href="/{{item}}" ng-click='$parent.selected="{{item}}"' ng-class="{'active': selected==item}">
-            {{item.name || item}}
-          </a>
-        </li>
-      </ul>
-
       <!-- Right Nav Section -->
       <ul class="right">
         <li class="has-dropdown">
