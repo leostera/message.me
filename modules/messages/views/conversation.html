@@ -1,9 +1,8 @@
 <section ng-hide="selectedConversation">
-<h3 >Here you'll see a conversation.</h3>
-<p>But first you need to start one or to continue an existing one.</p>
-<h4>Starting a new one.</h4>
-<p>Click on the People tab, then click on someone and you'll see what to do.</p>
-<h4>Continuing an existing one</h4>
+<h3 >Need help?</h3>
+<h4>Starting a new conversation.</h4>
+<p>Click on the People tab, then click on someone and you'll see what to do. Every time you start a conversation like this a new one will be available on the conversations.</p>
+<h4>Continuing an existing conversation</h4>
 <p>Click on the Conversations tab, then click on any of the conversations listed there and you'll see what to do.</p>
 </section>
 <section ng-show="selectedConversation" class="row" ng-init="message_search=null">
@@ -14,7 +13,7 @@
     <span>{{selectedConversation.to.username}}</span>
   </header>
   <section class="large-9 left">
-    <article ng-repeat="message in (selectedConversation.messages | filter:message_search)" ng-class="{'me': message.from._id == me._id}" class="row">
+    <article ng-repeat="message in (selectedConversation.messages | filter:message_search)" ng-class="{'me': selectedConversation.from._id == me._id}" class="row">
       <img class="large-1 left" ng-src="//graph.facebook.com/{{message.from.username}}/picture" alt="">
       <section class="large-9 left">
         <h6>{{message.from.username}}</h6>
