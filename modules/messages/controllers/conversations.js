@@ -9,6 +9,7 @@ angular.module('mme.messages')
     $scope.me = false;
     $scope.users = [];
     $scope.message = null;
+    $scope.currentList = 'conversations';
     $scope.conversations = [];
     $scope.selectedUsers = [];
     $scope.selectedConversation = false;
