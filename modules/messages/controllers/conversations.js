@@ -24,6 +24,16 @@ angular.module('mme.messages')
 
     ConversationService.list().then(function (conversations) {
       $scope.conversations = $scope.conversations.concat(conversations).reverse();
+      $scope.conversations.forEach(function (c) {
+        c.messages.forEach(function (m) {
+          if(c.to._id === m.to) {
+            m.to = c.to;
+          }
+          if(c.from._id === m.from) {
+            m.from = c.from;
+          }
+        })
+      })
     });
 
     $scope.$watch('currentList', function (cl) {
