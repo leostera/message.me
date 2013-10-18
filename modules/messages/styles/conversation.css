@@ -3,6 +3,26 @@ conversation {
   display: block;
   font-size: 0.8em;
 }
+conversation > section.row > section.left {
+  height: 450px !important;
+  overflow-y: scroll;
+}
+conversation > section.row > section.left -webkit-scrollbar {
+  -webkit-appearance: none !important;
+}
+conversation > section.row > section.left -webkit-scrollbar:vertical {
+  width: 11px;
+}
+conversation > section.row > section.left -webkit-scrollbar:horizontal {
+  height: 11px;
+}
+conversation > section.row > section.left -webkit-scrollbar-thumb {
+  border-radius: 8px;
+  border: 2px solid rgba(0, 0, 0, 0.9);
+  /* should match background, can't be transparent */
+
+  background-color: rgba(0, 0, 0, 0.5);
+}
 conversation > section.row {
   margin: 0 auto !important;
   width: 100% !important;
@@ -19,7 +39,6 @@ conversation > section.row section.left {
 }
 conversation > section.row section.left article {
   margin: 0 auto;
-  height: 48px;
   float: left;
   display: block;
   width: 100%;
@@ -33,8 +52,6 @@ conversation > section.row section.left article section {
 conversation > section.row section.left article section.large-9 {
   margin: 0;
   padding: 0 10px;
-  height: 450px !important;
-  overflow-y: scroll;
 }
 conversation > section.row section.left article section > h6 {
   font-size: 0.5em;
@@ -44,5 +61,5 @@ conversation > section.row section.left article section > h6 {
 conversation > section.row section.left article section > p {
   font-size: 0.5em;
   font-weight: normal !important;
-  line-height: 0.7;
+  line-height: 1;
 }
