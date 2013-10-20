@@ -11,12 +11,14 @@
   <ng-view class="row"></ng-view>
   <script src="/build/build.js"></script>
   <script>
-  require('enricomarino-foundation');
-  window.angular = require('leostera-angular.js');
+  require('leostera-modernizr');
+  var foundation = require('enricomarino-foundation');
+
+  var angular = require('leostera-angular.js');
   require('leostera-angular.js/build/angular-route.js');
   require('leostera-angular.js/build/angular-animate.js');
 
-  window._ = require('lodash-lodash');
+  var _ = require('lodash-lodash');
 
   require('ng2-auth');
   require('ng2-auth-facebook');

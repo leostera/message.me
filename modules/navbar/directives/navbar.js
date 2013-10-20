@@ -14,6 +14,7 @@ angular.module('mme.navbar')
       restrict: 'E',
       replace: true,
       link: function(scope, element, attr) {
+        foundation.init(document);
         scope.select=false;
 
         var handleUserData = function (event, data) {
