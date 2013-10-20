@@ -6,7 +6,7 @@
  */
 angular
 .module('mme.shared')
-.factory('OnlineUsersService', function ($rootScope, $q, ng2ws) {
+.factory('OnlineUsersService', ['$rootScope','$q','ng2ws', function ($rootScope, $q, ng2ws) {
 
   var users = [];
 
@@ -58,4 +58,4 @@ angular
       return deferred.promise;
     }
   };
-});
+}]);
