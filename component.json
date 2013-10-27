@@ -1,14 +1,16 @@
 {
   "dependencies": {
-    "leostera/angular.js": "*",
+    "componentizr/angular": "*",
+    "componentizr/angular-route": "*",
+    "componentizr/angular-animate": "*",
+    "componentizr/modernizr": "*",
     "ng2/auth": "*",
     "ng2/auth-facebook": "*",
     "ng2/loading": "*",
     "ng2/debug": "*",
     "ng2/ws": "*",
     "enricomarino/foundation": "*",
-    "lodash/lodash": "*",
-    "leostera/modernizr": "*"
+    "lodash/lodash": "*"
   },
   "remotes": [],
   "local": [
