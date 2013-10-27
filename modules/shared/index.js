@@ -7,6 +7,7 @@ var app = angular.module('mme.shared',
     'ng2AuthFacebook',
     'ng2Loading',
     'ng2Debug',
+    'notifications'
   ]);
 
 require('./controllers/login');
