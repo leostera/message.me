@@ -3,7 +3,9 @@
 <ul>
   <li ng-repeat="user in users | orderBy:'-status' | filter:user_search.name">
     <img
-      ng-src="//graph.facebook.com/{{user.username}}/picture" alt="{{user.username}}'s picture"
+      ng-src="{{ '//graph.facebook.com/'+ (user.username || user.facebook) +'/picture'}}"
+      alt="{{user.username}}'s picture"
+      class="profile-pic"
       ng-class="{'offline': user.status==false, 'match': user_search.name, 'marked': user.marked}"
       ng-click="mark(user)">
   </li>
