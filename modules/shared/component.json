@@ -5,7 +5,12 @@
   "version": "0.0.1",
   "keywords": [],
   "dependencies": {
-    "ng2/ws": "*"
+    "ng2/auth": "*",
+    "ng2/auth-facebook": "*",
+    "ng2/loading": "*",
+    "ng2/debug": "*",
+    "ng2/ws": "*",
+    "ng2/notifications": "*"
   },
   "development": {},
   "license": "MIT",
