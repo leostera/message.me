@@ -14,12 +14,12 @@ angular.module('mme.messages')
     $scope.selectedUsers = [];
     $scope.selectedConversation = false;
 
-    OnlineUsersService.update();
-
     UserService.getUser().then(function (me) {
+      console.log(me);
       $scope.me = {
         _id: me._id,
-        username: me.username
+        username: me.username,
+        facebook: me.facebook
       };
     });
 
@@ -60,6 +60,7 @@ angular.module('mme.messages')
         text: message.text,
         from: $scope.selectedConversation.to._id === $scope.me._id && $scope.me || $scope.selectedConversation.from,
       });
+      console.log($scope.me._id, $scope.selectedConversation);
       ConversationService.sendMessage($scope.selectedConversation._id, message)
         .then(function (m) {
           // do something with the message
