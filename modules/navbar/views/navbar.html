@@ -16,7 +16,7 @@
       <ul class="right">
         <li class="has-dropdown">
           <a href="#">
-            <img class="profile-picture" ng-show="user.username" ng-src="{{user.picture}}" alt="">
+            <img class="profile-picture" ng-show="user.username || user.facebook" ng-src="{{ '//graph.facebook.com/'+ (user.username || user.facebook) +'/picture'}}" alt="">
             {{ user.username || "Login" }}
           </a>
           <ul class="dropdown"><li class="title back js-generated"><h5><a href="#">« Back</a></h5></li>
