@@ -6,8 +6,8 @@
  */
 angular.module('mme.messages')
   .directive('conversationsList',
-    ['ConversationService', 'ng2ws'
-  , function (ConversationService, ws) {
+    ['ConversationService', 'ng2ws', 'Notification'
+  , function (ConversationService, ws, Notification) {
 
     return {
       priority: 0,
@@ -32,6 +32,7 @@ angular.module('mme.messages')
             console.log(isNew);
 
             if(isNew) {
+              notify(message);
               updateConversations();
             } else {
               scope.conversations.forEach(function (conversation) {
@@ -52,14 +53,33 @@ angular.module('mme.messages')
             }
           });
         });
+
+        var notify = function (message) {
+
+          var user;
+          scope.users.forEach(function (u) {
+            if(message.from === u._id) {
+              user = u.username || u.facebook;
+            }
+          });
+
+          var not = {
+            image: '//graph.facebook.com/'+user+'/picture',
+            title: 'New Conversation',
+            text: message.text,
+            show: true
+          };
+
+          Notification.create(not);
+        }
         
         var updateConversations = function () {
           ConversationService.list().then(function (conversations) {
             scope.conversations = scope.conversations.concat(conversations).reverse();
-            var id = scope.selectedConversation._id;
+            var id = scope.selectedConversation && scope.selectedConversation._id;
             scope.conversations = _.unique(scope.conversations, '_id');
             scope.conversations.forEach(function (c) {
-              if(c._id == id) {
+              if(id && c._id == id) {
                 scope.selectedConversation = c;
                 scope.selectedConversation.selected = true;
               }

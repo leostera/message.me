@@ -5,7 +5,7 @@
  * Show nav bar, show Login with Facebook button.
  */
 angular.module('mme.navbar')
-  .directive('navbar',['OAuth2', '$location', function (OAuth2, $location) {
+  .directive('navbar',['OAuth2', 'Notification', '$location', function (OAuth2, Notification, $location) {
     'use strict';
 
     return {
@@ -25,6 +25,10 @@ angular.module('mme.navbar')
             $location.path('/');
           }
         };
+
+        scope.enableNotifications = function () {
+          Notification.checkPermission();
+        }
 
         scope.$on('ng2auth:login::success', handleUserData);
         scope.$on('ng2auth:logout::success', handleUserData);

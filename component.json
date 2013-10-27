@@ -9,6 +9,7 @@
     "ng2/loading": "*",
     "ng2/debug": "*",
     "ng2/ws": "*",
+    "ng2/notifications": "*",
     "enricomarino/foundation": "*",
     "lodash/lodash": "*"
   },

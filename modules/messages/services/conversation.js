@@ -10,7 +10,7 @@ angular
   return {
     list: function () {
       var deferred = $q.defer();
-      $http.get('http://halo_api.leostera.com:8080/conversations')
+      $http.get('http://localhost:8080/conversations')
         .success(function (res) {
           deferred.resolve(res);
         }, function (error) {
@@ -20,7 +20,7 @@ angular
     },
     start: function (conversations) {
       var deferred = $q.defer();
-      $http.post('http://halo_api.leostera.com:8080/conversations', conversations)
+      $http.post('http://localhost:8080/conversations', conversations)
         .success(function (res) {
           deferred.resolve(res);
         }, function (error) {
@@ -31,7 +31,7 @@ angular
     sendMessage: function (c_id, message) {
       if(!c_id || !message) return;
       var deferred = $q.defer();
-      $http.post('http://halo_api.leostera.com:8080/conversations/'+c_id+'/messages', message)
+      $http.post('http://localhost:8080/conversations/'+c_id+'/messages', message)
         .success(function (res) {
           deferred.resolve(res);
         }, function (error) {

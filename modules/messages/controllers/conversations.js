@@ -2,8 +2,8 @@
  * @name compose.controllers:compose
  */
 angular.module('mme.messages')
-  .controller('conversations',['$scope', 'OnlineUsersService', 'UserService', 'ConversationService'
-  , function ($scope, OnlineUsersService, UserService, ConversationService) {
+  .controller('conversations',['$scope', 'OnlineUsersService', 'UserService', 'ConversationService', 'Notification'
+  , function ($scope, OnlineUsersService, UserService, ConversationService, Notification) {
 
 
     $scope.me = false;
@@ -30,6 +30,7 @@ angular.module('mme.messages')
         });
         $scope.selectedConversation = null;
       } else if (cl==='conversations') {
+        Notification.checkPermission()
         $scope.selectedUsers = [];
         $scope.users.forEach(function (u) {
           u.marked = false;
