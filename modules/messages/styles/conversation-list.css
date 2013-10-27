@@ -9,6 +9,8 @@ conversations-list > span {
   display: block;
 }
 conversations-list > ul {
+  height: 590px !important;
+  overflow-y: scroll;
   list-style: none;
 }
 conversations-list > ul li {
@@ -37,8 +39,8 @@ conversations-list > ul li img {
   display: block;
 }
 conversations-list > ul li section > span {
-  position: absolute;
-  margin: 0 20px;
+  position: relative;
+  margin: 0px;
   line-height: 1;
   padding: 0;
   font-size: 0.9em;

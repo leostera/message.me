@@ -20,7 +20,6 @@ conversation > section.row > section.left -webkit-scrollbar-thumb {
   border-radius: 8px;
   border: 2px solid rgba(0, 0, 0, 0.9);
   /* should match background, can't be transparent */
-
   background-color: rgba(0, 0, 0, 0.5);
 }
 conversation > section.row {
