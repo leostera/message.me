@@ -12,6 +12,8 @@
     "ng2/ws": "*",
     "ng2/notifications": "*"
   },
+  "files": [
+  ],
   "development": {},
   "license": "MIT",
   "main": "index.js",

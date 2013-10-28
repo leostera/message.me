@@ -15,7 +15,7 @@ angular.module('mme.shared')
     scopes:'email,read_friendlists,user_friends'
   });
 
-  ng2wsProvider.setUrl("ws://halo_api.leostera.com:8080");
+  ng2wsProvider.setUrl("ws://23.23.102.245:8080");
   // ng2wsProvider.setRetriesNumber(5);
 }])
 
